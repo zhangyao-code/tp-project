@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public::top"}
+</head>
+<body>
+
+<form class="layui-form form-item" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">公司名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="title" autocomplete="off" lay-verify="required" placeholder="请输入公司名称" class="layui-input">
+        </div>
+        <label class="layui-form-label">英文名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="en_title" autocomplete="off" lay-verify="required" placeholder="请输入公司名称的英文" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">公司地址</label>
+        <div class="layui-input-inline">
+            <input type="text" name="address" autocomplete="off" lay-verify="required" placeholder="请输入公司地址" class="layui-input">
+        </div>
+        <label class="layui-form-label">电话</label>
+        <div class="layui-input-inline">
+            <input type="text" name="phone" autocomplete="off" lay-verify="required" placeholder="请输入公司电话" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" autocomplete="off" lay-verify="email" placeholder="请输入邮箱" class="layui-input">
+        </div>
+        <label class="layui-form-label">邮政编码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="post_code" autocomplete="off" lay-verify="required" placeholder="请输入邮政编码" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">网址</label>
+        <div class="layui-input-inline">
+            <input type="text" name="website" autocomplete="off" placeholder="请输入网址" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+{include file="public::bottom"}
+<script>
+    layui.use(['form'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            $.post("/admin/Contact/add", data.field, function (data) {
+                if(data.code == 200){
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index);
+                    window.parent.location.reload();
+                }
+                layer.msg(data.msg,{time:2000});
+            });
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

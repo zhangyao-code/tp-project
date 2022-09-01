@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+ {include file="public::top"}
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo"><img src="/static/logo.png" style="width: 80%;height: 100%;"></div>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="{$user_data.avatar}" class="layui-nav-img">
+                    {$user_data.username}
+                </a>
+<!--                <dl class="layui-nav-child">-->
+<!--                    <dd><a href="">基本资料</a></dd>-->
+<!--                    <dd><a href="">安全设置</a></dd>-->
+<!--                </dl>-->
+            </li>
+            <li class="layui-nav-item"><a href="/admin/Login/logout">退出</a></li>
+        </ul>
+    </div>
+
+    {include file="public::left"}
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+       <iframe src="{$menu_list.0.sub_menu.0.menu_link}" menu_id="{$menu_list.0.sub_menu.0.id}" id="iframe" style="width: 100%;height: 100%;border: 0;" onload="loadFrame(this)"></iframe>
+    </div>
+
+    <div class="layui-footer" style="text-align: center;">
+        <!-- 底部固定区域 -->
+        Copyright © {$year} 卓高科技技术部出品
+    </div>
+</div>
+{include file="public::bottom"}
+</body>
+</html>

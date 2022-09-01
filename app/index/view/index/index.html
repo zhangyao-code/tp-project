@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public::top"}
+    <script type="text/javascript" src="/web/skin/script/org.js" data-main="indexMain"></script>
+    <script type="text/javascript" src="/web/skin/script/8390.js"></script>
+</head>
+<body id="longPage" class="gh0  longPage  bodyindex  cn">
+
+{include file="public::head"}
+
+<div id="sitecontent" class="ff_sitecontent">
+
+    <div id="indexPage" class="ff_indexPage" data-scroll-ease="Expo.easeInOut" data-scroll-speed="1" data-control="0"
+         data-control-wheel="0" data-singlescreen="0">
+        {notempty name="banner_list"}
+        <div id="topSlider" class="ff_topSlider mslider module">
+            <div class="content_wrapper">
+                <div class="content_list owl-carousel owl-theme" data-slider-height="500" data-slider-auto="1"
+                     data-slider-mode="0" data-slider-pause="4" data-slider-ease="ease-out" data-slider-speed="1"
+                     style="height:500px">
+                    {volist name="banner_list" id="vo"}
+                    <div class="item_block">
+                        <div class="item_bg image" style="background-image:url({$vo.img_src})"></div>
+                        <a target="_blank" href="/index/Course/index" style="width: 100%; height: 100%;"> </a></div>
+                    {/volist}
+                </div>
+                <div class="sliderArrow">
+                    <div></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+
+        <!--广告部分 开始 如需删除从此段开始往下到-->
+        {notempty name="image_list"}
+        <div class="mlist ad01 module ff_noSlider"
+             style="
+   background-position: initial;background-size: cover;background-repeat: no-repeat;
+  ">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow">
+                    <p class="title">ad01</p>
+                </div>
+                <div class="container_content">
+                    <div class="content_wrapper">
+                        <div class="tab_content">
+                            <div class="content_list clearfix"><!--小广告 开始-->
+                                {volist name="image_list" id="vo"}
+                                <div id="item_block_{$key}" class="item_block_{$key} item_block wow" style="animation-delay:.{$key}s">
+                                    <a href="/index/Course/index" class="item_box">
+                                        <div href="/index/Course/index" class="item_img" target="_blank"><img
+                                                src="{$vo.img_src}"/>
+                                            <div class="item_mask"></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {/volist}
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+        <!--广告部分 结束 到此段结束！-->
+        {notempty name="course_list"}
+        <div class="mlist project module ff_noSlider"
+             style="
+   background-position: center center; background-size: initial; background-repeat: no-repeat;
+   ">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow">
+                    <p class="title">课程体系</p>
+                    <p class="subtitle">直播授课 / 1对1批改 / 及时答疑 / 无限回放</p>
+                </div>
+                <div class="container_category wow movedx" data-movedx-mid="2" data-movedx-distance="15">
+                    <a href="/index/Course/index" class="active">
+                        <span>全部</span>
+                    </a>
+                    {notempty name="course_type"}
+                    {volist name="course_type" id="vo"}
+                    <a href="/index/Course/index?type_id={$vo.id}">
+                        <span>{$vo.title}</span>
+                    </a>
+                    {/volist}
+                    <a href="/index/Course/index" class="ff_more">
+                        <span>MORE</span>
+                    </a>
+                    {/notempty}
+                </div>
+                <div class="container_content">
+                    <div class="content_wrapper">
+                        <div class="content_list clearfix">
+                            {volist name="course_list" id="vo"}
+                            <div id="item_block_0" class="item_block_0 item_block wow" style="animation-delay:.0s">
+                                <a href="/index/Course/detail?id={$vo.id}" class="item_box">
+                                    <div href="/index/Course/detail?id={$vo.id}" class="item_img" target="_blank">
+                                        <img src="{$vo.img_src}"/>
+                                        <div class="item_mask"></div>
+                                    </div>
+                                    <div class="item_wrapper clearfix">
+                                        <div class="item_info clearfix">
+                                            <p class="title ellipsis">{$vo.title}</p>
+                                            <p class="subtitle ellipsis"></p>
+                                        </div>
+                                        <div class="item_des">
+                                            <p class="description">{$vo.desc}</p>
+                                        </div>
+                                        <span href="/index/Course/detail?id={$vo.id}" class="details hide"> MORE
+                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                                <a href="/index/Course/detail?id={$vo.id}" class="details"> MORE
+                                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                </a>
+                                {if condition="$vo.speaker"}
+                                <div class="item_tags clearfix">
+                                    <i class="fa fa-tags"></i>
+                                    <a href="/index/Course/detail?id={$vo.id}"> 主讲：{$vo.speaker} </a>
+                                </div>
+                                {/if}
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+        {notempty name="free_live"}
+        <div class="mlist videom module bgShow  ff_slider" style="
+   background-position: initial;background-size: contain;background-repeat: no-repeat;
+   background-image:url(/web/skin/pic/1523609383712.jpg);">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow"><p class="title">免费直播课</p>
+                    <p class="subtitle">激发用户的学习需求，帮助用户唤启更好的自己</p></div>
+                <div class="container_content">
+                    <div class="content_wrapper slider" data-slider-num='1' data-slider-loop="1">
+                        <div class="content_list clearfix">
+                            {volist name="free_live" id="vo"}
+                            <div data-href="{$vo.live_src}" data-index="{$key}" class="item_block_{$key} item_block wow"
+                                 style="animation-delay:.{$key}s">
+                                <div data-href="{$vo.live_src}" class="item_box videom-box">
+                                    <div class="item_img" target="_blank"><img
+                                            src="{$vo.img_src}"/>
+                                        <div class="item_mask"></div>
+                                    </div>
+                                    <div class="item_wrapper clearfix">
+                                        <div class="item_info clearfix">
+                                            <p class="title ellipsis">{$vo.title}</p>
+                                            {if condition="$vo['speaker']"}
+                                            <p class="subtitle ellipsis">主讲：{$vo.speaker}</p>
+                                            {/if}
+                                        </div>
+                                        <div class="item_des">
+                                            <div class="description" style="width: 80%;">
+                                                <p>{$vo.desc}</p>
+                                                <p><br/>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span data-href="{$vo.live_src}" class="details hide"> MORE <i
+                                                class="fa fa-angle-right" aria-hidden="true"></i> </span></div>
+                                </div>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+        {notempty name="strength"}
+        <div class="mlist service module bgShow  ff_noSlider"
+             style="
+   background-position: initial;background-size: cover;background-repeat: no-repeat;
+   background-image:url(/web/skin/pic/1523930503784.png);">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow"><p class="title">实力保证</p>
+                    <p class="subtitle">知名精英人士倾力推荐</p></div>
+                <div class="container_content">
+                    <div class="content_wrapper">
+                        <div class="content_list clearfix">
+                            {volist name="strength" id="vo"}
+                            <div id="item_block_{$key}" class="item_block_{$key} item_block wow" style="animation-delay:.{$key}s">
+                                <a href="/index/Strength/detail?id={$vo.id}" class="item_box">
+                                    <div href="/index/Strength/detail?id={$vo.id}" class="item_img" target="_blank">
+                                        <img src="{$vo.img_src}"/>
+                                        <div class="item_mask"></div>
+                                    </div>
+
+                                    <div class="item_wrapper clearfix">
+                                        <div class="item_info clearfix">
+                                            <p class="title ellipsis">{$vo.title}</p>
+                                            <p class="subtitle ellipsis"></p>
+                                        </div>
+                                        <div class="item_des">
+                                            <p class="description">{$vo.desc}</p>
+                                        </div>
+                                    <span href="/index/Strength/detail?id={$vo.id}" class="details hide"> MORE<i class="fa fa-angle-right"
+                                                                                               aria-hidden="true"></i> </span>
+                                    </div>
+                                </a>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+        {if condition="$config.reason"}
+        <div class="mcustomize module bgShow horizontal tril"
+             style="
+   background-image:url(/web/skin/pic/1523930363536.png);   background-position: initial;background-size: contain;background-repeat: no-repeat;
+     ">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_content">
+                    <div class="contentbody">
+                        <div class="wrapper">
+                            {$config.reason|raw}
+                        </div>
+                    </div>
+                    <div class="mediabody wow"><a target="_blank" href="/index/About/index">
+                        <div class="image" style="background-image:url(/web/skin/pic/1523608567921.png)"></div>
+                        <div class="mask"></div>
+                        <div class="link_icon"><i class="fa fa-link" aria-hidden="true"></i></div>
+                    </a></div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        {/if}
+        {notempty name="teach_list"}
+        <div class="mlist team module ff_slider"
+             style="
+   background-position: initial;background-size: cover;background-repeat: no-repeat;
+  ">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow"><p class="title">名师堂</p>
+                    <p class="subtitle">知名精英人士名师团队</p></div>
+                <div class="container_category wow movedx" data-movedx-mid="2" data-movedx-distance="15"><a
+                        href="/index/Teacher/index" class="ff_more"><span>MORE</span></a></div>
+                <div class="container_content">
+                    <div class="content_wrapper slider" data-slider-num='2' data-slider-loop="1">
+                        <div class="content_list clearfix">
+                            {volist name="teach_list" id="vo"}
+                            <div id="item_block_{$key}" class="item_block_{$key} item_block wow" style="animation-delay:.{$key}s"><a
+                                    href="/index/Teacher/detail?id={$vo.id}" class="item_box">
+                                <div href="/index/Teacher/detail?id={$vo.id}" class="item_img" target="_blank"><img
+                                        src="{$vo.img_src}"/>
+                                    <div class="item_mask"></div>
+                                </div>
+                                <div class="item_wrapper clearfix">
+                                    <div class="item_info clearfix">
+                                        <p class="title ellipsis">{$vo.title}</p>
+                                        <p class="subtitle ellipsis">{$vo.post}</p>
+                                    </div>
+                                    <div class="item_des">
+                                        <p class="description">{$vo.desc}</p>
+                                    </div>
+                                </div>
+                            </a> <a href="/index/Teacher/detail?id={$vo.id}" class="details"> MORE<i class="fa fa-angle-right"
+                                                                                         aria-hidden="true"></i> </a>
+                            </div>
+                            {/volist}
+
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+
+        <div class="mcounter module bgShow   "
+             style="
+   background-position: initial;background-size: contain;background-repeat: no-repeat;
+         background-image:url({$spread.img_src});">
+            <div class="bgmask"></div>
+            <div id="counterBgdx" style="position:absolute; width:100%; height:100%"></div>
+            <div class="module_container">
+                <div class="container_content">
+                    <ul class="content_list">
+                        <li>
+                            <div>
+                                <p class="number"><span class="counterDX" data-counter-value="{$config.grad_num}">{$config.grad_num}</span><span
+                                        class="unit">+</span></p>
+                                <p class="title">已结业付费学员</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <p class="number"><span class="counterDX" data-counter-value="{$config.everywhere}">{$config.everywhere}</span><span
+                                        class="unit">+</span></p>
+                                <p class="title">遍布国家及省级市区</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <p class="number"><span class="counterDX" data-counter-value="{$config.quality_num}">{$config.quality_num}</span><span
+                                        class="unit">+</span></p>
+                                <p class="title">优质精英教师</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <p class="number"><span class="counterDX" data-counter-value="{$config.pure_num}">{$config.pure_num}</span><span
+                                        class="unit">%</span></p>
+                                <p class="title">纯名师教育</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        {notempty name="news_list"}
+        <div class="mlist news module ff_slider"
+             style="
+   background-position: initial;background-size: cover;background-repeat: no-repeat;
+  ">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow"><p class="title">新闻</p>
+                    <p class="subtitle">News</p></div>
+                <div class="container_category wow movedx" data-movedx-mid="2" data-movedx-distance="15"><a
+                        href="/index/About/news_list" class="ff_more"><span>MORE</span></a></div>
+                <div class="container_content">
+                    <div class="content_wrapper slider" data-slider-num='3' data-slider-loop="1">
+                        <div class="content_list clearfix">
+                            {volist name="news_list" id="vo"}
+                            <div id="item_block_{$key}" class="item_block_{$key} item_block wow" style="animation-delay:.{$key}s"><a
+                                    href="/index/About/detail?id={$vo.id}" class="item_box">
+                                <div href="/index/About/detail?id={$vo.id}" class="item_img" target="_blank"><img
+                                        src="{$vo.img_src}"/>
+                                    <div class="item_mask"></div>
+                                </div>
+                                <div class="item_wrapper clearfix">
+                                    <div class="item_info clearfix">
+                                        <p class="title ellipsis">{$vo.title}</p>
+                                        <p class="subtitle ellipsis"></p>
+                                    </div>
+                                    <div class="date_wrap"><span class="year">{$vo.year}</span><i
+                                            class="time-connect">-</i><span class="m">{$vo.month}</span><i
+                                            class="time-connect">-</i><span class="d">{$vo.day}</span></div>
+                                    <div class="item_des">
+                                        <p class="description">{$vo.desc}</p>
+                                    </div>
+                                    <span href="/index/About/detail?id={$vo.id}" class="details hide"> MORE<i
+                                            class="fa fa-angle-right" aria-hidden="true"></i> </span></div>
+                            </a> <a href="/index/About/detail?id={$vo.id}" class="details"> MORE<i class="fa fa-angle-right"
+                                                                                         aria-hidden="true"></i> </a>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+        <!--战略合作 开始 如需删除从此段开始往下到-->
+        {notempty name="cooper_list"}
+        <div class="mlist imagelink module ff_slider"
+             style="
+   background-position: initial;background-size: cover;background-repeat: no-repeat;
+  ">
+            <div class="bgmask"></div>
+            <div class="module_container">
+                <div class="container_header wow"><p class="title">战略合作</p>
+                    <p class="subtitle">与{$config.cooper_num}家机构进行战略合作</p></div>
+                <div class="container_content">
+                    <div class="content_wrapper slider" data-slider-num='6' data-slider-loop="1">
+                        <ul class="content_list">
+                            {volist name="cooper_list" id="vo"}
+                            <li id="item_block_{$key}" class="item_block wow" style="animation-delay:.{$key}s"><a
+                                    href="/index/Index/cooper_detail?id={$vo.id}" target="_blank" class="item_img" title="Cinder">
+                                <div href="/index/Index/cooper_detail?id={$vo.id}" class="item_box" target="_blank"><img
+                                        src="{$vo.img_src}"/></div>
+                                <div class="item_wrapper clearfix">
+                                    <div class="item_info clearfix">
+                                        <p class="title ellipsis">{$vo.title}</p>
+                                        <p class="subtitle ellipsis"></p>
+                                    </div>
+                                    <div class="item_des">
+                                        <p class="description"></p>
+                                    </div>
+                                </div>
+                            </a></li>
+                            {/volist}
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        {/notempty}
+        <!--战略合作 结束 到此段结束！-->
+
+        <div id="mcontact" class="mcontact module bgShow "
+             style="
+  background-image:url(/web/skin/pic/1523931162459.jpg);   background-position: initial;background-size: contain;background-repeat: no-repeat;
+   ">
+            <div class="module_container">
+                <div class="container_header wow">
+                    <p class="title">免费试听课程</p>
+                    <p class="subtitle">课程顾问为您服务,与全球1000万会员一起提高学习掌握技能</p>
+                </div>
+                <div class="container_content">
+                    <div class="content_wrapper">
+                        <div id="contactlist" class="contactlist">
+                            <div id="contactinfo" class="contactinfo wow">
+
+                                <h3 class="ellipsis contact_name">{$config.company}</h3>
+                                <p class="ellipsis contact_add">{if condition="$config.address"}地址：{$config.address}{/if}</p>
+                                <p class="ellipsis contact_zip">{if condition="$config.post_code"}邮编：{$config.post_code}{/if}</p>
+                                <p class="ellipsis contact_tel">{if condition="$config.phone"}电话：{$config.phone}{/if}</p>
+                                <p class="ellipsis contact_mob">{if condition="$config.telphone"}手机：{$config.telphone}{/if}</p>
+                                <p class="ellipsis contact_fax">{if condition="$config.fax"}传真：{$config.fax}{/if}</p>
+                                <p class="ellipsis contact_eml">{if condition="$config.email"}邮箱：{$config.email}{/if}</p>
+                                <div class="ff_social"><a class="fl" target="_blank" href="http://weibo.com/"><i
+                                        class="fa fa-weibo"></i></a><a class="fl" target="_blank"
+                                                                       href="tencent://message/?uin={$config.qq}&Site=qq&Menu=yes"><i
+                                        class="fa fa-qq"></i></a> <a id="mpbtn" class="fl" target="_blank"
+                                                                     href="{$config.wechat_qrcode}"><i
+                                        class="fa fa-weixin"></i></a></div>
+                            </div>
+                            <div id="contactform" class="contactform wow">
+                                <div style="position: relative;z-index: 1;padding-top: 40px;padding-bottom: 100px;padding: 212px 100px 80px 100px;border-radius: 8px;background: #fff;">
+                                    <p class="contactform_name">
+                                        <input type="text" class="inputtxt" id="name" name="name" placeholder="姓名"
+                                               autocomplete="off"  />
+                                    </p>
+                                    <p class="contactform_eml">
+                                        <input type="text" class="inputtxt" id="email" name="email" placeholder="邮箱"
+                                               autocomplete="off"/>
+                                    </p>
+                                    <p class="contactform_tel">
+                                        <input type="text" class="inputtxt" id="telphone" name="telphone" placeholder="电话"
+                                               autocomplete="off"/>
+                                    </p>
+                                    <p class="contactform_content">
+                                        <textarea class="inputtxt" id="remark" name="remark" placeholder="内容"
+                                                  autocomplete="off"></textarea>
+                                    </p>
+                                    <p class="contactform_submit">
+                                        <input class="inputtxt submit" id="submit_free" type="submit" value="提交"  />
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="public::bottom"}
+
+</body>
+<script src="/web/skin/layer/layer.js"></script>
+<script>
+    $('#submit_free').on('click',function(){
+        var name=$('#name').val();
+        var email=$('#email').val();
+        var telphone=$('#telphone').val();
+        var remark=$('#remark').val();
+        console.log('name',name);
+        if(!name || name == ''){
+            layer.msg('姓名不能为空',{time:2000});
+        }else  if(!email || email == ''){
+            layer.msg('邮件不能为空',{time:2000});
+        }else  if(!telphone || telphone == ''){
+            layer.msg('电话不能为空',{time:2000});
+        }else  if(!remark || remark == ''){
+            layer.msg('内容不能为空',{time:2000});
+        }else {
+            $.ajax({
+                url: "/index/Index/free_study",
+                data: {'name': name, 'email': email, 'telphone': telphone, 'remark': remark},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        $("#contactform").find("input,textarea").each(function () {
+                            $(this).val("")
+                        });
+                    }
+                    layer.msg(data.msg, {time: 2000});
+                },
+                error: function () {
+                    layer.msg('程序错误', {time: 2000});
+                }
+            })
+        }
+    });
+</script>
+</html>

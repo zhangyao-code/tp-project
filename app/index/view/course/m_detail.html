@@ -1,0 +1,251 @@
+<!doctype html>
+<html class="agent-mobile  theme-w theme-wgreen">
+<head>
+    {include file="public::m_top"}
+    <style>
+        .ff_indexPage .project .content_wrapper, .bodyproject .project .content_wrapper {
+            position: relative;
+            margin-right: -10px;
+        }
+        .bodylistpost.bodyproject .postSlider {
+            width: 480px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .bodylistpost.bodyproject .postSlider .tab_content {
+            padding: 0;
+        }
+        .owl-carousel .owl-stage-outer {
+            position: relative;
+            overflow: hidden;
+            -webkit-transform: translate3d(0, 0, 0);
+        }
+        .bodylistpost.bodyproject .postSlider .tab_button, .bodylistpost.bodyproject .postSlider .owl-nav {
+            display: none;
+        }
+        .bodylistpost.bodyproject .postSlider .owl-dots {
+            bottom: 10px;
+        }
+        .tab_button, .bodylistpost.bodyproject .postSlider .owl-nav {
+            display: none;
+        }
+        .postContent {
+            margin-bottom: 40px;
+            padding-top: 40px;
+        }
+        .project.mlistpost .postInfo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: calc(100% - 550px);
+        }
+        .project.mlistpost .postInfo .mainInfor {
+            max-width: 100%;
+            float: none;
+        }
+        .project.mlistpost .postInfo .mainInfor .title {
+            font-size: 22px;
+            color: #444;
+        }
+        .project.mlistpost .postInfo .description {
+            max-width: 100%;
+            float: none;
+            color: #929292;
+            margin: 22px 0;
+        }
+        .project.mlistpost .postbody {
+            background: #f8f8f8;
+            padding: 60px 70px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0px;
+        }
+        .project.mlistpost .tabBtn .post-prev {
+            border-left: none;
+            border-right: none;
+            border-top: none;
+        }
+        .project.mlistpost .tabBtn .post-prev, .project.mlistpost .tabBtn .post-next {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+        }
+        .service.mlistpost .tabBtn .post-prev .img-wrap, .project.mlistpost .tabBtn .post-prev .img-wrap, .team.mlistpost .tabBtn .post-prev .img-wrap, .news.mlistpost .tabBtn .post-prev .img-wrap, .videom.mlistpost .tabBtn .post-prev .img-wrap {
+            right: 15px;
+        }
+        .service.mlistpost .tabBtn .post-prev .infor-wrap, .project.mlistpost .tabBtn .post-prev .infor-wrap, .team.mlistpost .tabBtn .post-prev .infor-wrap, .news.mlistpost .tabBtn .post-prev .infor-wrap, .videom.mlistpost .tabBtn .post-prev .infor-wrap {
+            float: left;
+        }
+        .service.mlistpost .tabBtn .post-prev .infor-wrap .title, .project.mlistpost .tabBtn .post-prev .infor-wrap .title, .team.mlistpost .tabBtn .post-prev .infor-wrap .title, .news.mlistpost .tabBtn .post-prev .infor-wrap .title, .videom.mlistpost .tabBtn .post-prev .infor-wrap .title, .service.mlistpost .tabBtn .post-next .infor-wrap .title, .project.mlistpost .tabBtn .post-next .infor-wrap .title, .team.mlistpost .tabBtn .post-next .infor-wrap .title, .news.mlistpost .tabBtn .post-next .infor-wrap .title, .videom.mlistpost .tabBtn .post-next .infor-wrap .title {
+            font-size: 16px;
+            line-height: 20px;
+            color: #666;
+        }
+        .project.mlistpost .tabBtn .post-prev .infor-wrap .subtitle, .project.mlistpost .tabBtn .post-next .infor-wrap .subtitle {
+            display: none;
+        }
+        .project.mlistpost .tabBtn .post-next {
+            border-right: none;
+            border-top: none;
+        }
+        .project.mlistpost .tabBtn .post-prev, .project.mlistpost .tabBtn .post-next {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+        }
+        .postbody p {
+            line-height: 24px;
+        }
+        .agent-mobile .project .item_block .item_img {
+            width: 100%;
+        }
+        .service.mlistpost .tabBtn .post-prev, .project.mlistpost .tabBtn .post-prev, .team.mlistpost .tabBtn .post-prev, .news.mlistpost .tabBtn .post-prev, .videom.mlistpost .tabBtn .post-prev {
+            float: left;
+            padding-left: 85px;
+        }
+        .service.mlistpost .tabBtn .post-prev, .project.mlistpost .tabBtn .post-prev, .team.mlistpost .tabBtn .post-prev, .news.mlistpost .tabBtn .post-prev, .videom.mlistpost .tabBtn .post-prev, .service.mlistpost .tabBtn .post-next, .project.mlistpost .tabBtn .post-next, .team.mlistpost .tabBtn .post-next, .news.mlistpost .tabBtn .post-next, .videom.mlistpost .tabBtn .post-next {
+            transition: all 0.36s ease;
+            position: relative;
+            width: 50%;
+            height: 120px;
+            overflow: hidden;
+            float: left;
+            padding: 10px;
+            box-sizing: border-box;
+            background: #f5f5f5;
+        }
+        .service.mlistpost .tabBtn .post-prev .img-wrap, .project.mlistpost .tabBtn .post-prev .img-wrap, .team.mlistpost .tabBtn .post-prev .img-wrap, .news.mlistpost .tabBtn .post-prev .img-wrap, .videom.mlistpost .tabBtn .post-prev .img-wrap, .service.mlistpost .tabBtn .post-next .img-wrap, .project.mlistpost .tabBtn .post-next .img-wrap, .team.mlistpost .tabBtn .post-next .img-wrap, .news.mlistpost .tabBtn .post-next .img-wrap, .videom.mlistpost .tabBtn .post-next .img-wrap {
+            transition: all 0.36s ease;
+            opacity: 0;
+            width: 80px;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .service.mlistpost .tabBtn .post-prev .infor-wrap, .project.mlistpost .tabBtn .post-prev .infor-wrap, .team.mlistpost .tabBtn .post-prev .infor-wrap, .news.mlistpost .tabBtn .post-prev .infor-wrap, .videom.mlistpost .tabBtn .post-prev .infor-wrap, .service.mlistpost .tabBtn .post-next .infor-wrap, .project.mlistpost .tabBtn .post-next .infor-wrap, .team.mlistpost .tabBtn .post-next .infor-wrap, .news.mlistpost .tabBtn .post-next .infor-wrap, .videom.mlistpost .tabBtn .post-next .infor-wrap {
+            width: 250px;
+            position: relative;
+            top: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .service.mlistpost .tabBtn .post-prev .details, .project.mlistpost .tabBtn .post-prev .details, .team.mlistpost .tabBtn .post-prev .details, .news.mlistpost .tabBtn .post-prev .details, .videom.mlistpost .tabBtn .post-prev .details {
+            border-right: 1px solid #e5e5e5;
+            left: 22px;
+        }
+        .service.mlistpost .tabBtn .post-prev .details, .project.mlistpost .tabBtn .post-prev .details, .team.mlistpost .tabBtn .post-prev .details, .news.mlistpost .tabBtn .post-prev .details, .videom.mlistpost .tabBtn .post-prev .details, .service.mlistpost .tabBtn .post-next .details, .project.mlistpost .tabBtn .post-next .details, .team.mlistpost .tabBtn .post-next .details, .news.mlistpost .tabBtn .post-next .details, .videom.mlistpost .tabBtn .post-next .details {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 16px;
+            color: transparent;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body style="overflow-x:0;height: auto;">
+<div id="bodymask"></div>
+<div id="sitecontent" style="overflow:hidden;">
+
+    {include file="public::m_head"}
+        <div class="mlist project module">
+            <div class="bgmask"></div>
+            <div class="m_container">
+                <div id="pageTarget" class="ff_pageTarget module">
+                    <div class="module_container">
+                        <div class="container_target wow">您的位置：<a href='/'>首页</a><i
+                                class="fa fa-angle-right"></i><a href='/index/Course/index'>课程体系</a><i
+                                class="fa fa-angle-right"></i><a href='/index/Course/index?type_id={$detail.type_id}'>{$detail.title}</a></div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="mlistpost project module">
+                        <div class="module_container">
+                            <div class="container_content">
+                                <div class="content_wrapper">
+                                    <div id="postWrapper">
+                                        <div id="postSlider" class="postSlider mlist">
+                                            <div class="tab_content">
+                                                <div class="item_block item_block_0 " style="width: 100%;">
+                                                    <div class="wrapper">
+                                                        <div class="item_img"><img src="{$detail.img_src}" style="width: 480px;"/></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="postContent">
+                                            <div class="postInfo" style="position: relative;width: 100%;">
+                                                <div class="mainInfor">
+                                                    <p class="title" style="line-height: 24px;">{$detail.title}</p>
+                                                </div>
+                                                <div class="description"><p>{$detail.desc}</p>
+                                                    <p><br></p></div>
+                                            </div>
+                                            <div class="postbody">
+                                                {$detail.content|raw}
+                                            </div>
+                                            <div class="conTabBtn tabBtn">
+                                                {if condition="$prev_data"}
+                                                <a href='/index/Course/detail?id={$prev_data.id}' class="post-prev">
+                                                    <div class="img-wrap">
+                                                        <div style="background-image: url({$prev_data.img_src})"></div>
+                                                        <img src="{$prev_data.img_src}"></div>
+                                                    <div class="infor-wrap"><span class="title">{$prev_data.title}</span>
+                                                        {if condition="$prev_data.speaker"}
+                                                        <span class="subtitle">主讲：{$prev_data.speaker}</span>
+                                                        {/if}
+                                                    </div>
+                                                    <i class="details"></i>
+                                                    <div class="tabMask"></div>
+                                                </a>
+                                                {else / }
+                                                <a href="javascript:;" class="post-prev empty">
+                                                    <div class="img-wrap"></div>
+                                                    <div class="infor-wrap"><span class="title"></span><span
+                                                            class="subtitle"></span></div>
+                                                    <i class="details"></i>
+                                                    <div class="tabMask"></div>
+                                                </a>
+                                                {/if}
+                                                {if condition="$next_data"}
+                                                <a href='/index/Course/detail?id={$next_data.id}' class="post-next">
+                                                    <div class="img-wrap">
+                                                        <div style="background-image: url({$next_data.img_src})"></div>
+                                                        <img src="{$next_data.img_src}"></div>
+                                                    <div class="infor-wrap"><span class="title">{$next_data.title}</span>
+                                                        {if condition="$next_data.speaker"}
+                                                        <span class="subtitle">主讲：{$next_data.speaker}</span>
+                                                        {/if}
+                                                    </div>
+                                                    <i class="details"></i>
+                                                    <div class="tabMask"></div>
+                                                </a>
+                                                {else /}
+                                                <a href="javascript:;" class="post-next empty">
+                                                    <div class="img-wrap"></div>
+                                                    <div class="infor-wrap"><span class="title"></span><span
+                                                            class="subtitle"></span></div>
+                                                    <i class="details"></i>
+                                                    <div class="tabMask"></div>
+                                                </a>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    {include file="public::m_footer"}
+
+</div>
+{include file="public::m_bottom"}
+</body>
+</html>

@@ -1,0 +1,103 @@
+<div class="bodyMask"></div>
+<div id="header">
+    <div class="wrapper">
+        <div class="content">
+            <div id="headTop"><a href="/" id="logo"><img src="{$config.logo}" height="44"/></a>
+                <div id="hcontact" class="fr"><i class="fa fa-phone"></i>
+                    <p><span class="telNum">{$config.phone}</span><br/>
+                        <a href="mailto:{$config.email}">{$config.email}</a></p>
+                </div>
+                <div id="search-header" class="searchGroup">
+                    <div class="search_wrap">
+                        <div class="searchOnOff"><i class="fa fa-search" aria-hidden="true"></i></div>
+                        <div class="searchBox">
+                            <div class="searchFormGroup">
+                                <input type="text" id="search_content" aria-label="搜索" placeholder="搜索" autocorrect="off"
+                                       autocapitalize="off" autocomplete="off" spellcheck="false"/>
+                                <div class="searchSub"><span>搜索</span><i class="fa fa-search" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="searchClose"><i class="fa fa-times" aria-hidden="true"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="openBtn" class="fl btn">
+                    <div class="lcbody">
+                        <div class="lcitem top">
+                            <div class="rect top"></div>
+                        </div>
+                        <div class="lcitem center hide">
+                            <div class="rect bottom"></div>
+                        </div>
+                        <div class="lcitem bottom">
+                            <div class="rect bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="navWrapper">
+                <div class="content">
+                    <ul class="nav movedx" data-movedx-mid="1">
+                        <li class="navitem">
+                            <a {if condition="$menu_id == 1"}class="active"{/if} href="/" target="_self"> <span
+                                data-title="首页">首页</span> </a>
+                        </li>
+                        <li class="navitem">
+                            {notempty name="course_type"}
+                            <a {if condition="$menu_id == 2"}class="active"{/if} href="javascript:;" target="_self"> <span
+                                data-title="课程体系">课程体系</span> <i class="fa fa-angle-down"></i></a>
+                            <ul class="subnav">
+                                {volist name="course_type" id="vo"}
+                                <li><a href='/index/Course/index?type_id={$vo.id}' target="_self">{$vo.title}</a></li>
+                                {/volist}
+                            </ul>
+                            {else}
+                            <a {if condition="$menu_id == 2"}class="active"{/if} href="/index/Course/index" target="_self"> <span
+                                    data-title="课程体系">课程体系</span></a>
+                            {/notempty}
+                        </li>
+                        <li class="navitem">
+                            <a {if condition="$menu_id == 3"}class="active"{/if} href="/index/FreeLive/index" target="_self"> <span
+                                data-title="免费直播课">免费直播课</span></a>
+                        </li>
+                        <li class="navitem">
+                            <a {if condition="$menu_id == 4"}class="active"{/if} href="/index/Strength/index" target="_self"> <span
+                                data-title="实力保证">实力保证</span></a>
+                        </li>
+                        <li class="navitem">
+                            {notempty name="course_type"}
+                            <a {if condition="$menu_id == 5"}class="active"{/if} href="javascript:;" target="_self"> <span
+                                data-title="名师堂">名师堂</span> <i class="fa fa-angle-down"></i></a>
+                            <ul class="subnav">
+                                {volist name="teach_class" id="vo"}
+                                <li><a href='/index/Teacher/index?class_id={$vo.id}' target="_self">{$vo.title}</a></li>
+                                {/volist}
+                            </ul>
+                            {else}
+                            <a {if condition="$menu_id == 5"}class="active"{/if} href="/index/Teacher/index" target="_self"> <span
+                                    data-title="名师堂">名师堂</span></a>
+                            {/notempty}
+                        </li>
+                        <li class="navitem">
+                            <a {if condition="$menu_id == 6"}class="active"{/if} href="javascript:;" target="_self"> <span
+                                data-title="关于我们">关于我们</span> <i class="fa fa-angle-down"></i></a>
+                            <ul class="subnav">
+                                <li><a href="/index/About/index" target="_self">关于机构</a></li>
+                                <li><a href="/index/About/news_list" target="_self">新闻</a></li>
+                            </ul>
+                        </li>
+                        <li class="navitem">
+                            <a {if condition="$menu_id == 7"}class="active"{/if} href="/index/Index/free_study" target="_self"> <span
+                                data-title="免费学">免费学</span></a>
+                        </li>
+                        <li class="navitem">
+                            <a {if condition="$menu_id ==8"}class="active"{/if} href="/index/Index/contact" target="_self"> <span
+                                data-title="联系我们">联系我们</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>

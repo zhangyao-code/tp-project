@@ -1,0 +1,15 @@
+<div id="online"><a class="home" href="/"><i aria-hidden="true" class="fa fa-home"></i> </a> <a class="ol-tel"
+                                                                                                         href="tel:{$config.phone}"><i
+        aria-hidden="true" class="fa fa-phone"></i> </a> <a class="ol-qq"
+                                                            href="mqqwpa://im/chat?chat_type=wpa&uin={$config.qq}&version=1&src_type=web&web_src=qq.com"><i
+        aria-hidden="true" class="fa fa-qq"></i> </a></div>
+<div class="list_nav"></div>
+<script>
+    $('#search_content').on('change',function(){
+        var url=window.location.pathname;
+        var search=$('#search_content').val();
+        console.log('search',search);
+        console.log('url',url);
+        location.href=url+'?search='+search;
+    })
+</script>

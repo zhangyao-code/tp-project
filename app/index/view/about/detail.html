@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$detail.title}-{$config.title}</title>
+    <meta name="keywords" content="$detail.title}-{$config.keyword}">
+    <meta name="description" content="$detail.title}-{$config.description}">
+    {include file="public::top"}
+    <script type="text/javascript" src="/web/skin/script/org.js" data-main="postMain"></script>
+</head>
+
+<body id="longPage" class="gh0  longPage  bodylistpost bodynews cn">
+
+{include file="public::head"}
+
+<div id="sitecontent" class="ff_sitecontent">
+
+    <div class="npagePage post ff_postPage">
+        <div id="pageTarget" class="ff_pageTarget module">
+            <div class="module_container">
+                <div class="container_target wow">您的位置：<a href='/'>首页</a><i
+                        class="fa fa-angle-right"></i><a href='/index/About/index'>关于我们</a><i
+                        class="fa fa-angle-right"></i><a href='/index/About/news_list'>新闻</a></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="mlistpost news module">
+                <div class="module_container">
+                    <div class="container_content">
+                        <div class="content_wrapper">
+                            <div id="postWrapper">
+                                <div class="postContent">
+                                    <div class="postInfo">
+                                        <div class="mainInfor">
+                                            <p class="title">{$detail.title}</p>
+                                        </div>
+                                    </div>
+                                    <div class="postbody">
+                                       {$detail.content|raw}
+                                    </div>
+                                    <div class="conTabBtn tabBtn">
+                                        {if condition="$prev_data"}
+                                        <a href='/index/About/detail?id={$prev_data.id}' class="post-prev">
+                                            <div class="img-wrap">
+                                                <div style="background-image: url({$prev_data.img_src})"></div>
+                                                <img src="{$prev_data.img_src}"></div>
+                                            <div class="infor-wrap"><span class="title">{$prev_data.title}</span></div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {else / }
+                                        <a href="javascript:;" class="post-prev empty">
+                                            <div class="img-wrap"></div>
+                                            <div class="infor-wrap"><span class="title"></span></div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {/if}
+                                        {if condition="$next_data"}
+                                        <a href='/index/About/detail?id={$next_data.id}' class="post-next">
+                                            <div class="img-wrap">
+                                                <div style="background-image: url({$next_data.img_src})"></div>
+                                                <img src="{$next_data.img_src}"></div>
+                                            <div class="infor-wrap"><span class="title">{$next_data.title}</span>
+                                            </div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {else /}
+                                        <a href="javascript:;" class="post-next empty">
+                                            <div class="img-wrap"></div>
+                                            <div class="infor-wrap"><span class="title"></span></div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="listWrap">
+                                    <div id="listContent" class="listContent_post">
+                                        <h3>最新内容</h3>
+                                        <div class="mlist type04">
+                                            <div class="content_wrapper">
+                                                <div class="content_list clearfix">
+                                                    {volist name="news_list" id="vo"}
+                                                    <div id="item_block_{$key}" class="item_block_{$key} item_block wow"
+                                                         style="animation-delay:.{$key}s"><a href="/index/About/detail?id={$vo.id}" class="item_box">
+                                                        <div href="/index/About/detail?id={$vo.id}" class="item_img"
+                                                             target="_blank"><img
+                                                                src="{$vo.img_src}"/>
+                                                            <div class="item_mask"></div>
+                                                        </div>
+                                                        <div class="item_wrapper clearfix">
+                                                            <div class="item_info clearfix">
+                                                                <p class="title ellipsis">{$vo.title}</p>
+                                                                <p class="subtitle ellipsis"></p>
+                                                            </div>
+                                                            <div class="item_des">
+                                                                <p class="description">{$vo.desc}</p>
+                                                            </div>
+                                                            <span href="/index/About/detail?id={$vo.id}" class="details hide"> MORE<i
+                                                                    class="fa fa-angle-right"
+                                                                    aria-hidden="true"></i> </span></div>
+                                                    </a> <a href="/index/About/detail?id={$vo.id}" class="details"> MORE<i
+                                                            class="fa fa-angle-right" aria-hidden="true"></i> </a></div>
+
+                                                    {/volist}
+                                                </div>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="public::bottom"}
+
+</body>
+</html>

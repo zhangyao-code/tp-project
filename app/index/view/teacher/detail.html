@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$detail.title}-{$config.title}</title>
+    <meta name="keywords" content="$detail.title}-{$config.keyword}">
+    <meta name="description" content="$detail.title}-{$config.description}">
+    {include file="public::top"}
+    <script type="text/javascript" src="/web/skin/script/org.js" data-main="postMain"></script>
+</head>
+<body id="longPage" class="gh0  longPage  bodylistpost bodyteam cn">
+
+{include file="public::head"}
+
+<div id="sitecontent" class="ff_sitecontent">
+
+    <div class="npagePage post ff_postPage">
+        <div id="pageTarget" class="ff_pageTarget module">
+            <div class="module_container">
+                <div class="container_target wow">您的位置：<a href='/'>首页</a><i
+                        class="fa fa-angle-right"></i><a href='/index/Teacher/index'>名师堂</a><i class="fa fa-angle-right"></i><a
+                        href='/index/Teacher/index?class_id={$detail.class_id}'>{$class_title}</a></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="mlistpost team module">
+                <div class="module_container">
+                    <div class="container_content">
+                        <div class="content_wrapper">
+                            <div id="postWrapper">
+                                <div class="postContent">
+                                    <div class="postInfo">
+                                        <div class="mainInfor">
+                                            <p class="title">{$detail.title}</p>
+                                            <p class="subtitle">{$detail.post}</p>
+                                        </div>
+                                    </div>
+                                    <div class="postbody"><p style="white-space: normal;">
+                                        <img src="{$detail.img_src}"/></p>
+                                        <p style="white-space: normal;">
+                                            &nbsp;</p>
+                                        <p style="white-space: normal;">
+                                            <strong style="font-family: 微软雅黑, &quot;Microsoft YaHei&quot;; font-size: 16px;">职称等级：{$detail.teach_title}</strong>
+                                        </p>
+                                        <p style="white-space: normal;">
+                                            &nbsp;</p>
+                                        <p style="white-space: normal;">
+                                            &nbsp;</p>
+                                        <hr style="white-space: normal;"/>
+                                        <p style="white-space: normal;">
+                                            &nbsp;</p>
+                                       {$detail.content|raw}
+                                    </div>
+                                    <div class="conTabBtn tabBtn">
+                                        {if condition="$prev_data"}
+                                        <a href='/index/Teacher/detail?id={$prev_data.id}' class="post-prev">
+                                            <div class="img-wrap">
+                                                <div style="background-image: url({$prev_data.img_src})"></div>
+                                                <img src="{$prev_data.img_src}"></div>
+                                            <div class="infor-wrap"><span class="title">{$prev_data.title}</span>
+                                                <span class="subtitle">{$prev_data.post}</span>
+                                            </div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {else / }
+                                        <a href="javascript:;" class="post-prev empty">
+                                            <div class="img-wrap"></div>
+                                            <div class="infor-wrap"><span class="title"></span><span
+                                                    class="subtitle"></span></div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {/if}
+                                        {if condition="$next_data"}
+                                        <a href='/index/Teacher/detail?id={$next_data.id}' class="post-next">
+                                            <div class="img-wrap">
+                                                <div style="background-image: url({$next_data.img_src})"></div>
+                                                <img src="{$next_data.img_src}"></div>
+                                            <div class="infor-wrap"><span class="title">{$next_data.title}</span>
+                                                <span class="subtitle">{$next_data.post}</span>
+                                            </div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {else /}
+                                        <a href="javascript:;" class="post-next empty">
+                                            <div class="img-wrap"></div>
+                                            <div class="infor-wrap"><span class="title"></span><span
+                                                    class="subtitle"></span></div>
+                                            <i class="details"></i>
+                                            <div class="tabMask"></div>
+                                        </a>
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="listWrap">
+                                    <div class="postInfo">
+                                        <p class="title">{$detail.title}</p>
+                                        <p class="subtitle">{$detail.post}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="public::bottom"}
+
+</body>
+</html>

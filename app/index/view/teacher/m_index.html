@@ -1,0 +1,113 @@
+<!doctype html>
+<html class="agent-mobile  theme-w theme-wgreen">
+<head>
+    {include file="public::m_top"}
+    <style>
+        .pager{
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .pager li{
+            padding: 10px 14px;
+            font-size: 14px;
+            background-color: #F5F5F5;
+            color: black;
+        }
+        .pager li.active{
+            background-color: #57bc4c;
+            color: white;
+        }
+        .pager li.disabled{
+            background-color: #FBFBFB;
+            color:#C9C9C9;
+        }
+    </style>
+</head>
+<body>
+<div id="bodymask"></div>
+<div id="sitecontent" style="overflow:hidden;">
+
+    {include file="public::m_head"}
+
+    <div class="content indexPage">
+        <div class="mm-head"></div>
+        <div id="mm-slider">
+            <ul class="slider">
+                {volist name="banner_list" id="vo"}
+                <li><a href="/index/Course/index" target="_blank">
+                    <div class="slider-img"><img src="{$vo.img_src}"/></div>
+                    <div class="slider-info">
+                        <p class="title"></p>
+                    </div>
+                </a></li>
+                {/volist}
+            </ul>
+        </div>
+
+        <!--广告部分 开始 如需删除从此段开始往下到-->
+        <div class="mlist ad01 module">
+            <div class="bgmask"></div>
+            <div class="m_container">
+                <div class="content">
+                    <div class="wrapper">
+                        <ul class="content_list">
+                            <!--小广告 开始-->
+                            {volist name="image_list" id="vo"}
+                            <li class="item_block wow " id="item_block_{$key}" style="animation-delay:.{$key}s"><a
+                                    class="item_img" href="/index/Course/index" target="_blank"> <img
+                                    src="{$vo.img_src}"/> </a>
+                                <div class="item_wrapper clearfix"></div>
+                            </li>
+                            {/volist}
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!--广告部分 结束 到此段结束！-->
+        <div class="mlist project module">
+            <div class="bgmask"></div>
+            <div class="m_container">
+                <div class="container_header wow animated "><p class="title">名师堂</p>
+                    <p class="subtitle">知名精英人士名师团队</p></div>
+                <div class="content">
+                    <div class="wrapper">
+                        <ul class="content_list clearfix">
+                            {volist name="teach_list" id="vo"}
+                            <li class="item_block wow" id="item_block_{$key}"><a class="item_box"
+                                                                                 href="/index/Teacher/detail?id={$vo.id}">
+                                <div class="item_img" href="/index/Teacher/detail?id={$vo.id}" target="_blank"><img
+                                        src="{$vo.img_src}"/>
+                                    <div class="item_mask"></div>
+                                </div>
+                                <div class="item_wrapper clearfix">
+                                    <div class="item_info clearfix">
+                                        <div class="text_wrap">
+                                            <p class="title ellipsis">{$vo.title}</p>
+                                            <p class="subtitle ellipsis">{$vo.post}</p>
+                                        </div>
+                                    </div>
+                                    <div class="item_des description">
+                                        {$vo.desc}
+                                    </div>
+                                </div>
+                            </a></li>
+                            {/volist}
+
+                        </ul>
+                    </div>
+                    {$page|raw}
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    {include file="public::m_footer"}
+
+</div>
+{include file="public::m_bottom"}
+</body>
+</html>

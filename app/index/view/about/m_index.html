@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="agent-mobile  theme-w theme-wgreen">
+<head>
+    {include file="public::m_top"}
+    <style>
+        .pager{
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .pager li{
+            padding: 10px 14px;
+            font-size: 14px;
+            background-color: #F5F5F5;
+            color: black;
+        }
+        .pager li.active{
+            background-color: #57bc4c;
+            color: white;
+        }
+        .pager li.disabled{
+            background-color: #FBFBFB;
+            color:#C9C9C9;
+        }
+    </style>
+</head>
+<body>
+<div id="bodymask"></div>
+<div id="sitecontent" style="overflow:hidden;">
+
+    {include file="public::m_head"}
+
+    <div class="content indexPage">
+        <div class="npagePage pageEditor" id="page_about">
+            <div class="content">
+                <div class="mpageEditor module">
+                    <div class="module_container">
+                        {$config.organ|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="public::m_footer"}
+
+</div>
+{include file="public::m_bottom"}
+</body>
+</html>

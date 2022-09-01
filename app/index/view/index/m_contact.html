@@ -1,0 +1,67 @@
+<!doctype html>
+<html class="agent-mobile  theme-w theme-wgreen">
+<head>
+    {include file="public::m_top"}
+</head>
+<body>
+<div id="bodymask"></div>
+<div id="sitecontent" style="overflow:hidden;">
+
+    {include file="public::m_head"}
+
+    <div class="content indexPage">
+        <div class="mm-head"></div>
+
+        <!--广告部分 结束 到此段结束！-->
+        <div class="mlist project module">
+            <div class="bgmask"></div>
+            <div class="m_container">
+                <div class="content">
+                    <div class="wrapper">
+                        <ul class="content_list clearfix">
+                           <h1>联系我们</h1>
+                            {volist name="contact_list" id="vo"}
+                            <li class="item_block wow" id="item_block_{$key}" style="padding: 10px 0;margin: 10px 0;">
+                                <td style="word-break: break-all; border-color: rgb(221, 221, 221);"
+                                    valign="top" width="426">
+                                    <p>
+                                                <span style="color: rgb(127, 127, 127);"><strong><span
+                                                        style="font-size: 16px;">{$vo.title}</span></strong></span></p>
+                                    <p>
+                                        <span style="font-size: 12px; color: rgb(191, 191, 191);">{$vo.en_title}</span>
+                                    </p>
+                                    <p>
+                                        &nbsp;</p>
+                                    <p style="line-height: 2.2em;">
+                                        总部地址：{$vo.address}</p>
+                                    <p style="line-height: 2.2em;">
+                                        总部电话：{$vo.phone}</p>
+                                    <p style="line-height: 2.2em;">
+                                        电子邮箱：{$vo.email}</p>
+                                    <p style="line-height: 2.2em;">
+                                        邮政编码：{$vo.post_code}</p>
+                                    <p style="line-height: 2.2em;">
+                                        {if condition="$vo.website"}
+                                        <a href="{$vo.website}" target="_blank"
+                                           textvalue="{$vo.website}">{$vo.website}</a>
+                                        {/if}
+                                    </p>
+                                    <p>
+                                        &nbsp;</p>
+                                </td>
+                            </li>
+                            {/volist}
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    {include file="public::m_footer"}
+
+</div>
+{include file="public::m_bottom"}
+</body>
+</html>

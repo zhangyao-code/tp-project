@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public::top"}
+    <script type="text/javascript" src="/web/skin/script/org.js" data-main="baseMain"></script>
+    <style>
+        .pagination{
+            display: flex;
+            justify-content: center;
+        }
+        .pagination li{
+            padding: 10px 14px;
+            font-size: 14px;
+            background-color: #F5F5F5;
+            color: black;
+        }
+        .pagination li.active{
+            background-color: #57bc4c;
+            color: white;
+        }
+        .pagination li.disabled{
+            background-color: #FBFBFB;
+            color:#C9C9C9;
+        }
+    </style>
+</head>
+<body id="longPage" class="gh0  longPage  bodylist bodynews cn">
+
+{include file="public::head"}
+
+<div id="sitecontent" class="ff_sitecontent">
+
+    <div class="npagePage ff_pageList">
+        <div id="pageTarget" class="ff_pageTarget module">
+            <div class="module_container">
+                <div class="container_header wow hide">
+                    <p class="title">新闻</p>
+                    <p class="subtitle">News</p>
+                </div>
+                <div class="container_target wow">您的位置：<a href='/'>首页</a><i
+                        class="fa fa-angle-right"></i><a href='/index/About/index'>关于我们</a><i
+                        class="fa fa-angle-right"></i><a href='/index/About/news_index'>新闻</a></div>
+                <div class="container_category wow movedx" data-movedx-mid="2" data-movedx-distance="15"></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="mlist news module ff_noSlider"
+                 style="
+   ">
+                <div class="bgmask"></div>
+                <div class="module_container">
+                    <div class="container_content">
+                        <div class="content_wrapper">
+                            <div class="content_list clearfix">
+                                {volist name="news_list" id="vo"}
+                                <div id="item_block_{$key}" class="item_block_{$key} item_block wow" style="animation-delay:.{$key}s">
+                                    <a href="/index/About/detail?id={$vo.id}" class="item_box">
+                                        <div href="/index/About/detail?id={$vo.id}" class="item_img" target="_blank"><img
+                                                src="{$vo.img_src}"/>
+                                            <div class="item_mask"></div>
+                                        </div>
+                                        <div class="item_wrapper clearfix">
+                                            <div class="item_info clearfix">
+                                                <p class="title ellipsis">{$vo.title}</p>
+                                                <p class="subtitle ellipsis"></p>
+                                            </div>
+                                            <div class="date_wrap"><span class="year">{$vo.year}</span><i
+                                                    class="time-connect">-</i><span class="m">{$vo.month}</span><i
+                                                    class="time-connect">-</i><span class="d">{$vo.day}</span></div>
+                                            <div class="item_des">
+                                                <p class="description">{$vo.desc}</p>
+                                            </div>
+                                            <span href="/index/About/detail?id={$vo.id}" class="details hide"> MORE<i
+                                                    class="fa fa-angle-right" aria-hidden="true"></i> </span></div>
+                                    </a> <a href="/index/About/detail?id={$vo.id}" class="details"> MORE<i class="fa fa-angle-right"
+                                                                                   aria-hidden="true"></i> </a></div>
+                                {/volist}
+
+                            </div>
+                        </div>
+                        {$page|raw}
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+
+{include file="public::bottom"}
+
+</body>
+</html>
