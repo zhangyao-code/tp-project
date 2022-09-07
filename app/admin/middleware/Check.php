@@ -22,15 +22,15 @@ class Check
             $node_pid = Db::name('node')->where(['node_link' => request()->action(), 'pid' => $node_id, 'status' => 1])->value('id');
             $node_ids = Db::name('role')->where(['id' => $role_id, 'status' => 1])->value('node_ids') ? explode(',', Db::name('role')->where(['id' => $role_id, 'status' => 1])->value('node_ids')) : [];
 
-            if (in_array($node_id, $node_ids) && in_array($node_pid, $node_ids)) {
+//            if (in_array($node_id, $node_ids) && in_array($node_pid, $node_ids)) {
                 return $next($request);
-            } else {
-                if (request()->isAjax()) {
-                    return json(['code'=>400,'msg'=>'暂无权限']);
-                } else {
-                    return Html::create('<html><script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script><script src="/static/layer/layer.js"></script><script>layer.msg("暂无权限",{time:2000});setTimeout(function(){parent.layer.closeAll();},2000)</script></html>','html',200);
-                }
-            }
+//            } else {
+//                if (request()->isAjax()) {
+//                    return json(['code'=>400,'msg'=>'暂无权限']);
+//                } else {
+//                    return Html::create('<html><script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script><script src="/static/layer/layer.js"></script><script>layer.msg("暂无权限",{time:2000});setTimeout(function(){parent.layer.closeAll();},2000)</script></html>','html',200);
+//                }
+//            }
         } else {
             if (request()->isAjax()) {
                 return json(['code'=>400,'msg'=>'登录失效，请刷新页面重新登录']);

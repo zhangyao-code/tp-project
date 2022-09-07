@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace app;
 
 use think\App;
-use think\Db;
+use think\facade\Db;
 use think\exception\ValidateException;
 use think\facade\Session;
 use think\Validate;
@@ -109,7 +109,7 @@ abstract class BaseController
         $token = request()->cookie('token');
         $user =Db::name('user_session')->where(['token'=>$token])->find();
         if(empty($user)){
-            return json(['code'=> 403, 'message'=> 'Authentication error, token is error']);
+            return null;
         }
         $this->user = Db::name('user')->where(['id'=>$user['userId']])->find();
         return $this->user;

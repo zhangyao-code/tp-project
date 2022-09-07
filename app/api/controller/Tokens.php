@@ -17,7 +17,6 @@ class Tokens extends BaseController
         $user = $this->getCurrentUser();
         if(!empty($user)){
             $token = md5($user['username'].time());
-            Db::name('user_session')->where(['userId'=>$user['id']])->delete();
             Db::name('user_session')->insert([
                 'userId' =>$user['id'],
                 'token' => $token,
@@ -27,8 +26,17 @@ class Tokens extends BaseController
             ]);
             return $this->_sayOk(['code' => 200, 'data' =>['token'=>$token]]);
         }
-        $username = request()->post('username', 'admin');
-        $password = request()->post('password', 'admin');
+        $data = request()->param();
+        $validate = Validate::rule([
+            'username|用户名' => 'require',
+            'password|密码' => 'require',
+        ]);
+
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => "请使用`用户名/密码`获取token"]);
+        }
+        $username = request()->post('username', '');
+        $password = request()->post('password', '');
 
         $user_data=Db::name('user')->where(['username'=>$username])->where('status','<>',0)->find();
         if($user_data){
@@ -38,7 +46,7 @@ class Tokens extends BaseController
                     Db::name('user_session')->insert([
                         'userId' =>$user_data['id'],
                         'token' => $token,
-                        'alive_before' => time()+7200,
+                        'alive_before' => time()+14400,
                         'create_time' => date('Y-m-d H:i:s', time()),
                         'update_time' => date('Y-m-d H:i:s', time()),
                     ]);
