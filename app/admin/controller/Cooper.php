@@ -18,29 +18,28 @@ use think\facade\View;
 
 class Cooper extends BaseController
 {
-
     protected $middleware = [Check::class];
     /**
      * 战略合作列表
      */
     public function index()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $data = request()->param();
-            $page=isset($data['page'])?$data['page']:'1';
-            $limit=isset($data['limit'])?$data['limit']:'10';
-            $search=isset($data['search'])?$data['search']:'';
-            if($search){
+            $page=isset($data['page']) ? $data['page'] : '1';
+            $limit=isset($data['limit']) ? $data['limit'] : '10';
+            $search=isset($data['search']) ? $data['search'] : '';
+            if ($search) {
                 $where[]=['title','like','%'.$search.'%'];
             }
             $where[]=['status','<>',0];
             $count=Db::name('cooper')->where($where)->count();
-            $cooperList=Db::name('cooper')->where($where)->page($page,$limit)->select()->toArray();
-            foreach ($cooperList as $k=>$vo){
-                $cooperList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
+            $cooperList=Db::name('cooper')->where($where)->page($page, $limit)->select()->toArray();
+            foreach ($cooperList as $k=>$vo) {
+                $cooperList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
             }
             return json(['data'=>$cooperList,'code'=>0,'count'=>$count]);
-        }else{
+        } else {
             return View::fetch();
         }
     }
@@ -48,8 +47,9 @@ class Cooper extends BaseController
     /**
      * 添加战略合作
      */
-    public function add(){
-        if(request()->isAjax()){
+    public function add()
+    {
+        if (request()->isAjax()) {
             $data=request()->param();
             $validate = Validate::rule([
                 'title|战略合作标题' => 'require',
@@ -62,15 +62,14 @@ class Cooper extends BaseController
                 $data['add_id']=Session::get('login_user_id');
                 unset($data['file']);
                 $add_id=Db::name('cooper')->insertGetId($data);
-                if($add_id){
+                if ($add_id) {
                     $ajaxarr=['code'=>200,'msg'=>'战略合作添加成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'战略合作添加失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
-
+        } else {
             return View::fetch();
         }
     }
@@ -78,9 +77,10 @@ class Cooper extends BaseController
     /**
      * 新闻编辑
      */
-    public function edit(){
+    public function edit()
+    {
         $data=request()->param();
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $validate = Validate::rule([
                 'id|新闻id'=>'require',
                 'title|战略合作标题' => 'require',
@@ -93,14 +93,14 @@ class Cooper extends BaseController
                 $data['edit_id']=Session::get('login_user_id');
                 unset($data['file']);
                 $save_id=Db::name('cooper')->save($data);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'战略合作编辑成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'战略合作编辑失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $id = isset($data['id']) ? $data['id'] : '';
             $cooper_data = Db::name('cooper')->where(['id' => $id])->find();
             View::assign('cooper_data', $cooper_data);
@@ -111,7 +111,8 @@ class Cooper extends BaseController
     /**
      * 战略合作删除
      */
-    public function delete(){
+    public function delete()
+    {
         $data=request()->param();
         $validate = Validate::rule([
             'id|战略合作ID'=>'require'
@@ -120,9 +121,9 @@ class Cooper extends BaseController
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
             $save_id=Db::name('cooper')->where(['id'=>$data['id']])->save(['status'=>0,'del_time'=>time(),'del_id'=>Session::get('login_user_id')]);
-            if($save_id){
+            if ($save_id) {
                 $ajaxarr=['code'=>200,'msg'=>'战略合作删除成功'];
-            }else{
+            } else {
                 $ajaxarr=['code'=>400,'msg'=>'战略合作删除失败'];
             }
         }

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace app\admin\controller;
 
 use app\BaseController;
@@ -18,9 +16,9 @@ class Login extends BaseController
      */
     public function index()
     {
-        if(Session::has('login_user_id')){
+        if (Session::has('login_user_id')) {
             return redirect('/admin/index');
-        }else {
+        } else {
             return View::fetch();
         }
     }
@@ -28,7 +26,8 @@ class Login extends BaseController
     /**
      * 登陆
      */
-    public function login(){
+    public function login()
+    {
         $data=request()->param();
         $validate = Validate::rule([
             'username|用户名' => 'require',
@@ -38,19 +37,19 @@ class Login extends BaseController
         if (!$validate->check($data)) {
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
-            $user_data=Db::name('user')->where(['username'=>$data['username']])->where('status','<>',0)->find();
-            if($user_data){
-                if($user_data['status'] == 1) {
+            $user_data=Db::name('user')->where(['username'=>$data['username']])->where('status', '<>', 0)->find();
+            if ($user_data) {
+                if ($user_data['status'] == 1) {
                     if ($user_data['password'] == md5($data['password'].$user_data['salt'])) {
-                        Session::set('login_user_id',$user_data['id']);
+                        Session::set('login_user_id', $user_data['id']);
                         $ajaxarr = ['code' => 200, 'msg' => '登陆成功'];
                     } else {
                         $ajaxarr = ['code' => 400, 'msg' => '密码错误'];
                     }
-                }else{
+                } else {
                     $ajaxarr = ['code' => 400, 'msg' => '账户已被禁用'];
                 }
-            }else{
+            } else {
                 $ajaxarr = ['code' => 400, 'msg' => '未查询到此用户'];
             }
         }
@@ -60,7 +59,8 @@ class Login extends BaseController
     /**
      * 登出
      */
-    public function logout(){
+    public function logout()
+    {
         Session::clear();
         return redirect('/admin/Login');
     }

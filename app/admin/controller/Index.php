@@ -20,28 +20,28 @@ class Index extends BaseController
      */
     public function index()
     {
-        if(Session::has('login_user_id')){
+        if (Session::has('login_user_id')) {
             $menu_list=Db::name('menu')->where(['status'=>1,'pid'=>0])->order('sort desc')->select()->toArray();
-            foreach ($menu_list as $k=>$vo){
+            foreach ($menu_list as $k=>$vo) {
                 $sub_menu=Db::name('menu')->where(['status'=>1,'pid'=>$vo['id']])->order('sort desc')->select()->toArray();
-                if(count($sub_menu) > 0){
+                if (count($sub_menu) > 0) {
                     $menu_list[$k]['sub_menu_num']=1;
-                }else{
+                } else {
                     $menu_list[$k]['sub_menu_num']=0;
                 }
                 $menu_list[$k]['menu_link']='/admin/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_id']])->value('node_link').'/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_pid']])->value('node_link');
 
-                foreach ($sub_menu as $key=>$val){
+                foreach ($sub_menu as $key=>$val) {
                     $sub_menu[$key]['menu_link']='/admin/'.Db::name('node')->where(['status'=>1,'id'=>$val['node_id']])->value('node_link').'/'.Db::name('node')->where(['status'=>1,'id'=>$val['node_pid']])->value('node_link');
                 }
                 $menu_list[$k]['sub_menu']=$sub_menu;
             }
-            View::assign('menu_list',$menu_list);
+            View::assign('menu_list', $menu_list);
             $user_data=Db::name('user')->where(['id'=>$this->user_id])->find();
-            View::assign('user_data',$user_data);
-            View::assign('year',date('Y'));
+            View::assign('user_data', $user_data);
+            View::assign('year', date('Y'));
             return View::fetch();
-        }else {
+        } else {
             return redirect('/admin/Login');
         }
     }

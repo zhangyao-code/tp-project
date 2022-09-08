@@ -15,7 +15,7 @@ class Tokens extends BaseController
     public function index()
     {
         $user = $this->getCurrentUser();
-        if(!empty($user)){
+        if (!empty($user)) {
             $token = md5($user['username'].time());
             Db::name('user_session')->insert([
                 'userId' =>$user['id'],
@@ -38,9 +38,9 @@ class Tokens extends BaseController
         $username = request()->post('username', '');
         $password = request()->post('password', '');
 
-        $user_data=Db::name('user')->where(['username'=>$username])->where('status','<>',0)->find();
-        if($user_data){
-            if($user_data['status'] == 1) {
+        $user_data=Db::name('user')->where(['username'=>$username])->where('status', '<>', 0)->find();
+        if ($user_data) {
+            if ($user_data['status'] == 1) {
                 if ($user_data['password'] == md5($password.$user_data['salt'])) {
                     $token = md5($username.time());
                     Db::name('user_session')->insert([
@@ -54,16 +54,13 @@ class Tokens extends BaseController
                 } else {
                     $ajaxarr = ['code' => 400, 'msg' => '密码错误'];
                 }
-            }else{
+            } else {
                 $ajaxarr = ['code' => 400, 'msg' => '账户已被禁用'];
             }
-        }else{
+        } else {
             $ajaxarr = ['code' => 400, 'msg' => '未查询到此用户'];
         }
 
         return $this->_sayOk($ajaxarr);
     }
-
-
-
 }

@@ -1,5 +1,6 @@
 <?php
-declare (strict_types = 1);
+
+declare(strict_types=1);
 
 namespace app;
 
@@ -103,12 +104,12 @@ abstract class BaseController
 
     public function getCurrentUser()
     {
-        if(!empty($this->user)){
+        if (!empty($this->user)) {
             return $this->user;
         }
         $token = request()->cookie('token');
         $user =Db::name('user_session')->where(['token'=>$token])->find();
-        if(empty($user)){
+        if (empty($user)) {
             return null;
         }
         $this->user = Db::name('user')->where(['id'=>$user['userId']])->find();

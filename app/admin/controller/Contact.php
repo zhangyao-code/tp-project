@@ -18,29 +18,28 @@ use think\facade\View;
 
 class Contact extends BaseController
 {
-
     protected $middleware = [Check::class];
     /**
      * 联系我们列表
      */
     public function index()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $data = request()->param();
-            $page=isset($data['page'])?$data['page']:'1';
-            $limit=isset($data['limit'])?$data['limit']:'10';
-            $search=isset($data['search'])?$data['search']:'';
-            if($search){
+            $page=isset($data['page']) ? $data['page'] : '1';
+            $limit=isset($data['limit']) ? $data['limit'] : '10';
+            $search=isset($data['search']) ? $data['search'] : '';
+            if ($search) {
                 $where[]=['title|en_title|address|phone','like','%'.$search.'%'];
             }
             $where[]=['status','<>',0];
             $count=Db::name('contact')->where($where)->count();
-            $contactList=Db::name('contact')->where($where)->page($page,$limit)->select()->toArray();
-            foreach ($contactList as $k=>$vo){
-                $contactList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
+            $contactList=Db::name('contact')->where($where)->page($page, $limit)->select()->toArray();
+            foreach ($contactList as $k=>$vo) {
+                $contactList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
             }
             return json(['data'=>$contactList,'code'=>0,'count'=>$count]);
-        }else{
+        } else {
             return View::fetch();
         }
     }
@@ -48,8 +47,9 @@ class Contact extends BaseController
     /**
      * 添加联系我们
      */
-    public function add(){
-        if(request()->isAjax()){
+    public function add()
+    {
+        if (request()->isAjax()) {
             $data=request()->param();
             $validate = Validate::rule([
                 'title|公司名称' => 'require',
@@ -65,15 +65,14 @@ class Contact extends BaseController
                 $data['add_time']=time();
                 $data['add_id']=Session::get('login_user_id');
                 $add_id=Db::name('contact')->insertGetId($data);
-                if($add_id){
+                if ($add_id) {
                     $ajaxarr=['code'=>200,'msg'=>'联系我们添加成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'联系我们添加失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
-
+        } else {
             return View::fetch();
         }
     }
@@ -81,9 +80,10 @@ class Contact extends BaseController
     /**
      * 联系我们编辑
      */
-    public function edit(){
+    public function edit()
+    {
         $data=request()->param();
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $validate = Validate::rule([
                 'id|联系我们ID'=>'require',
                 'title|公司名称' => 'require',
@@ -99,14 +99,14 @@ class Contact extends BaseController
                 $data['edit_time']=time();
                 $data['edit_id']=Session::get('login_user_id');
                 $save_id=Db::name('contact')->save($data);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'联系我们编辑成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'联系我们编辑失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $id = isset($data['id']) ? $data['id'] : '';
             $contact_data = Db::name('contact')->where(['id' => $id])->find();
             View::assign('contact_data', $contact_data);
@@ -117,7 +117,8 @@ class Contact extends BaseController
     /**
      * 联系我们删除
      */
-    public function delete(){
+    public function delete()
+    {
         $data=request()->param();
         $validate = Validate::rule([
             'id|联系我们ID'=>'require'
@@ -126,9 +127,9 @@ class Contact extends BaseController
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
             $save_id=Db::name('contact')->where(['id'=>$data['id']])->save(['status'=>0,'del_time'=>time(),'del_id'=>Session::get('login_user_id')]);
-            if($save_id){
+            if ($save_id) {
                 $ajaxarr=['code'=>200,'msg'=>'联系我们删除成功'];
-            }else{
+            } else {
                 $ajaxarr=['code'=>400,'msg'=>'联系我们删除失败'];
             }
         }

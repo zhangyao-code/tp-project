@@ -13,7 +13,7 @@ class Patient extends BaseController
 
     public function add(): \think\response\Json
     {
-        if(request()->isGet()){
+        if (request()->isGet()) {
             return json("请使用 post 提交");
         }
         $data = request()->param();
@@ -30,11 +30,11 @@ class Patient extends BaseController
         $user = $this->getCurrentUser();
         $data['createdTime']=time();
         $data['status']='normal';
-        $data['gender']=$data['gender'] == '男'?"男":"女";
+        $data['gender']=$data['gender'] == '男' ? "男" : "女";
         $data['createdUser']=$user['id'];
         try {
             $add_id=Db::name('patient')->insertGetId($data);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
 
@@ -45,9 +45,17 @@ class Patient extends BaseController
     public function list(): \think\response\Json
     {
         $user = $this->getCurrentUser();
+        $data = request()->param();
+        $search=isset($data['name']) ? trim($data['name']) : '';
+        $where=[];
+        if ($search) {
+            $where[]=['name','like','%'.$search.'%'];
+        }
+        $where[]=['createdUser', "=", $user['id']];
+        $where[]=['status', '=', 'normal'];
         try {
-            $list=Db::name('patient')->where('createdUser', "=", $user['id'])->where('status', '=', 'normal')->select()->toArray();
-        }catch (\Exception $exception){
+            $list=Db::name('patient')->where($where)->select()->toArray();
+        } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
 
@@ -56,7 +64,7 @@ class Patient extends BaseController
 
     public function update(): \think\response\Json
     {
-        if(request()->isGet()){
+        if (request()->isGet()) {
             return json("请使用 post 提交");
         }
         $data = request()->param();
@@ -72,20 +80,20 @@ class Patient extends BaseController
         if (!$validate->check($data)) {
             return json(['code' => 100, 'msg' => $validate->getError()]);
         }
-        $patient = Db::name('patient')->where('id','=',$data['id'])->find();
-        if(empty($patient)){
+        $patient = Db::name('patient')->where('id', '=', $data['id'])->find();
+        if (empty($patient)) {
             return json(['code'=>400,'msg'=>'就诊信息不存在，请确认id是否正确']);
         }
         $data['status']='normal';
-        $data['gender']=$data['gender'] == '男'?"男":"女";
+        $data['gender']=$data['gender'] == '男' ? "男" : "女";
         $data['updatedTime'] = time();
 
         try {
             $add_id=Db::name('patient')->save($data);
-            if(empty($add_id)){
+            if (empty($add_id)) {
                 return json(['code'=>400,'msg'=>'跟新失败']);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
 
@@ -95,7 +103,7 @@ class Patient extends BaseController
 
     public function delete()
     {
-        if(request()->isGet()){
+        if (request()->isGet()) {
             return json("请使用 post 提交");
         }
         $data = request()->param();
@@ -106,18 +114,17 @@ class Patient extends BaseController
         if (!$validate->check($data)) {
             return json(['code' => 100, 'msg' => $validate->getError()]);
         }
-        $patient = Db::name('patient')->where('id','=',$data['id'])->find();
-        if(empty($patient)){
+        $patient = Db::name('patient')->where('id', '=', $data['id'])->find();
+        if (empty($patient)) {
             return json(['code'=>400,'msg'=>'就诊信息不存在，请确认id是否正确']);
         }
         $id=Db::name('patient')->save([
             'id'=>$data['id'],
             'status'=>'deleted'
         ]);
-        if(empty($id)){
+        if (empty($id)) {
             return json(['code'=>400,'msg'=>'删除失败']);
         }
         return  json(['code'=>200,'msg'=>'删除成功']);
     }
-
 }

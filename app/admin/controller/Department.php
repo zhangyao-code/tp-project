@@ -16,7 +16,6 @@ use think\facade\View;
 
 class Department extends BaseController
 {
-
     protected $middleware = [Check::class];
 
     /**
@@ -36,7 +35,6 @@ class Department extends BaseController
             $where[] = ['status', '=', 'normal'];
             $userList = Db::name('hospital_department')->where($where)->page($page, $limit)->select()->toArray();
             foreach ($userList as $k => $vo) {
-
                 $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
             }
             $ajaxarr = ['code' => 0, 'data' => $userList];
@@ -90,7 +88,6 @@ class Department extends BaseController
             ]);
             if (!$validate->check($data)) {
                 return json(['code' => 100, 'msg' => $validate->getError()]);
-
             }
             if (Db::name('hospital_department')->where('id', '<>', $data['id'])->where(['name' => $data['name']])->find()) {
                 return json(['code' => 400, 'msg' => '名称重复，请更换']);
@@ -133,5 +130,4 @@ class Department extends BaseController
         }
         return json($ajaxarr);
     }
-
 }

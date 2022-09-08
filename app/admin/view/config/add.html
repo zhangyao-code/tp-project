@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public::top"}
+</head>
+<body>
+
+<style>
+    .layui-input-inline {
+        width: 450px !important;
+    }
+    .edui-default .edui-editor{
+        position:unset !important;
+    }
+</style>
+<link rel="stylesheet" href="/static/layui/formSelects/formSelects-v4.css"/>
+
+
+<form class="layui-form form-item" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">code</label>
+        <div class="layui-input-inline">
+            <input type="text" name="code" lay-verify="required" autocomplete="off" placeholder="请输入保存唯一标识" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">说明</label>
+        <div class="layui-input-inline">
+            <input type="text" name="summary" lay-verify="required" autocomplete="off" placeholder="请输入配置说明" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">内容</label>
+        <div class="layui-input-inline">
+            <textarea type="text" name="setting" style="min-height:70px " autocomplete="off" placeholder="" class="layui-input"></textarea>
+        </div>
+    </div>
+    <p style="margin-left: 100px">多个的或者利用为数组的用中文'，'隔开。</p>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+{include file="public::bottom"}
+<script>
+    layui.use(['form','upload'], function(){
+        var form = layui.form
+            ,upload=layui.upload
+            ,layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            $.post("/admin/Config/add", data.field, function (data) {
+                if(data.code == 200){
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index);
+                    window.parent.location.reload();
+                }
+                layer.msg(data.msg,{time:2000});
+            });
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

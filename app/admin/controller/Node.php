@@ -24,31 +24,31 @@ class Node extends BaseController
      */
     public function index()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $data = request()->param();
-            $id=isset($data['id'])?trim($data['id']):'';
+            $id=isset($data['id']) ? trim($data['id']) : '';
             $where[]=['status','<>',0];
-            if($id){
+            if ($id) {
                 $where[]=['pid','=',$id];
                 $nodeList=Db::name('node')->where($where)->select()->toArray();
-                foreach ($nodeList as $k=>$vo){
-                    $nodeList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
-                    $nodeList[$k]['node_pid']=Db::name('node')->where(['id'=>$vo['pid']])->value('node_name')?Db::name('node')->where(['id'=>$vo['pid']])->value('node_name'):'---';
+                foreach ($nodeList as $k=>$vo) {
+                    $nodeList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
+                    $nodeList[$k]['node_pid']=Db::name('node')->where(['id'=>$vo['pid']])->value('node_name') ? Db::name('node')->where(['id'=>$vo['pid']])->value('node_name') : '---';
 //                    $menuList[$k]['menu_link']='/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_id']])->value('node_link').'/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_pid']])->value('node_link');
                 }
-            }else{
+            } else {
                 $where[]=['pid','=','0'];
                 $nodeList=Db::name('node')->where($where)->select()->toArray();
-                foreach ($nodeList as $k=>$vo){
-                    $nodeList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
-                    $nodeList[$k]['haveChild']=DB::name('node')->where(['pid'=>$vo['id']])->where('status','<>',0)->count()?true:false;
+                foreach ($nodeList as $k=>$vo) {
+                    $nodeList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
+                    $nodeList[$k]['haveChild']=DB::name('node')->where(['pid'=>$vo['id']])->where('status', '<>', 0)->count() ? true : false;
 //                    $nodeList[$k]['menu_link']='/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_id']])->value('node_link').'/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_pid']])->value('node_link');
                     $nodeList[$k]['node_pid']='一级菜单';
                 }
             }
             $ajaxarr=['code'=>0,'data'=>$nodeList];
             return json($ajaxarr);
-        }else{
+        } else {
             return View::fetch();
         }
     }
@@ -56,8 +56,9 @@ class Node extends BaseController
     /**
      * 添加节点
      */
-    public function add(){
-        if(request()->isAjax()){
+    public function add()
+    {
+        if (request()->isAjax()) {
             $data=request()->param();
             $validate = Validate::rule([
                 'node_name|节点名称' => 'require',
@@ -69,14 +70,14 @@ class Node extends BaseController
                 $data['add_time']=time();
                 $data['add_id']=Session::get('login_user_id');
                 $add_id=Db::name('node')->insertGetId($data);
-                if($add_id){
+                if ($add_id) {
                     $ajaxarr=['code'=>200,'msg'=>'节点添加成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'节点添加失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             //一级节点
             $node_list = Db::name('node')->where(['pid' => 0, 'status' => 1])->select();
             View::assign('node_list', $node_list);
@@ -87,9 +88,10 @@ class Node extends BaseController
     /**
      * 节点编辑
      */
-    public function edit(){
+    public function edit()
+    {
         $data=request()->param();
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $validate = Validate::rule([
                 'id|菜单ID'=>'require',
                 'node_name|节点名称' => 'require',
@@ -101,14 +103,14 @@ class Node extends BaseController
                 $data['edit_time']=time();
                 $data['edit_id']=Session::get('login_user_id');
                 $save_id=Db::name('node')->save($data);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'节点编辑成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'节点编辑失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $id = isset($data['id']) ? $data['id'] : '';
             $node_data = Db::name('node')->where(['id' => $id])->field('id,node_name,pid,node_link')->find();
             View::assign('node_data', $node_data);
@@ -122,7 +124,8 @@ class Node extends BaseController
     /**
      * 节点删除
      */
-    public function delete(){
+    public function delete()
+    {
         $data=request()->param();
         $validate = Validate::rule([
             'id|菜单ID'=>'require'
@@ -130,13 +133,13 @@ class Node extends BaseController
         if (!$validate->check($data)) {
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
-            if(Db::name('node')->where(['pid'=>$data['id'],'status'=>1])->find()){
+            if (Db::name('node')->where(['pid'=>$data['id'],'status'=>1])->find()) {
                 $ajaxarr=['code'=>400,'msg'=>'此节点存在次级节点，请先删除次级节点'];
-            }else{
+            } else {
                 $save_id=Db::name('node')->where(['id'=>$data['id']])->save(['status'=>0,'del_time'=>time(),'del_id'=>Session::get('login_user_id')]);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'节点删除成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'节点删除失败'];
                 }
             }

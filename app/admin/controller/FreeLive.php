@@ -24,22 +24,22 @@ class FreeLive extends BaseController
      */
     public function index()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $data = request()->param();
-            $page=isset($data['page'])?$data['page']:'1';
-            $limit=isset($data['limit'])?$data['limit']:'10';
+            $page=isset($data['page']) ? $data['page'] : '1';
+            $limit=isset($data['limit']) ? $data['limit'] : '10';
             $where[]=['status','<>',0];
-            $search=isset($data['search'])?$data['search']:'';
-            if($search){
+            $search=isset($data['search']) ? $data['search'] : '';
+            if ($search) {
                 $where[]=['title','like','%'.$search.'%'];
             }
             $count=Db::name('free_live')->where($where)->count();
-            $liveList=Db::name('free_live')->where($where)->page($page,$limit)->select()->toArray();
-            foreach ($liveList as $k=>$vo){
-                $liveList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
+            $liveList=Db::name('free_live')->where($where)->page($page, $limit)->select()->toArray();
+            foreach ($liveList as $k=>$vo) {
+                $liveList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
             }
             return json(['data'=>$liveList,'code'=>0,'count'=>$count]);
-        }else{
+        } else {
             return View::fetch();
         }
     }
@@ -47,8 +47,9 @@ class FreeLive extends BaseController
     /**
      * 添加直播
      */
-    public function add(){
-        if(request()->isAjax()){
+    public function add()
+    {
+        if (request()->isAjax()) {
             $data=request()->param();
             $validate = Validate::rule([
                 'title|直播标题' => 'require',
@@ -62,15 +63,14 @@ class FreeLive extends BaseController
                 $data['add_id']=Session::get('login_user_id');
                 unset($data['file']);
                 $add_id=Db::name('free_live')->insertGetId($data);
-                if($add_id){
+                if ($add_id) {
                     $ajaxarr=['code'=>200,'msg'=>'直播添加成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'直播添加失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
-
+        } else {
             return View::fetch();
         }
     }
@@ -78,9 +78,10 @@ class FreeLive extends BaseController
     /**
      * 编辑直播
      */
-    public function edit(){
+    public function edit()
+    {
         $data=request()->param();
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $validate = Validate::rule([
                 'title|直播标题' => 'require',
                 'img_src|直播图片' => 'require',
@@ -93,14 +94,14 @@ class FreeLive extends BaseController
                 $data['edit_id']=Session::get('login_user_id');
                 unset($data['file']);
                 $save_id=Db::name('free_live')->save($data);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'直播编辑成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'直播编辑失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $id = isset($data['id']) ? $data['id'] : '';
             $live_data = Db::name('free_live')->where(['id' => $id])->field('id,title,img_src,speaker,desc,live_src')->find();
             View::assign('live_data', $live_data);
@@ -111,7 +112,8 @@ class FreeLive extends BaseController
     /**
      * 直播删除
      */
-    public function delete(){
+    public function delete()
+    {
         $data=request()->param();
         $validate = Validate::rule([
             'id|直播ID'=>'require'
@@ -120,9 +122,9 @@ class FreeLive extends BaseController
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
             $save_id=Db::name('free_live')->where(['id'=>$data['id']])->save(['status'=>0,'del_time'=>time(),'del_id'=>Session::get('login_user_id')]);
-            if($save_id){
+            if ($save_id) {
                 $ajaxarr=['code'=>200,'msg'=>'直播删除成功'];
-            }else{
+            } else {
                 $ajaxarr=['code'=>400,'msg'=>'直播删除失败'];
             }
         }

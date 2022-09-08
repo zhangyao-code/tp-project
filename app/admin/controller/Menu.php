@@ -24,36 +24,36 @@ class Menu extends BaseController
      */
     public function index()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $data = request()->param();
-            $id=isset($data['id'])?trim($data['id']):'';
-            $menu_name=isset($data['menu_name'])?trim($data['menu_name']):'';
+            $id=isset($data['id']) ? trim($data['id']) : '';
+            $menu_name=isset($data['menu_name']) ? trim($data['menu_name']) : '';
             $where=[];
-            if($menu_name){
+            if ($menu_name) {
                 $where[]=['menu_name','like','%'.$menu_name.'%'];
             }
             $where[]=['status','<>',0];
-            if($id){
+            if ($id) {
                 $where[]=['pid','=',$id];
                 $menuList=Db::name('menu')->where($where)->order('sort desc')->select()->toArray();
-                foreach ($menuList as $k=>$vo){
-                    $menuList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
-                    $menuList[$k]['menu_pid']=Db::name('menu')->where(['id'=>$vo['pid']])->value('menu_name')?Db::name('menu')->where(['id'=>$vo['pid']])->value('menu_name'):'---';
+                foreach ($menuList as $k=>$vo) {
+                    $menuList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
+                    $menuList[$k]['menu_pid']=Db::name('menu')->where(['id'=>$vo['pid']])->value('menu_name') ? Db::name('menu')->where(['id'=>$vo['pid']])->value('menu_name') : '---';
                     $menuList[$k]['menu_link']='/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_id']])->value('node_link').'/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_pid']])->value('node_link');
                 }
-            }else{
+            } else {
                 $where[]=['pid','=','0'];
                 $menuList=Db::name('menu')->where($where)->order('sort desc')->select()->toArray();
-                foreach ($menuList as $k=>$vo){
-                    $menuList[$k]['add_time']=date('Y-m-d',$vo['add_time']);
-                    $menuList[$k]['haveChild']=DB::name('menu')->where(['pid'=>$vo['id']])->where('status','<>',0)->count()?true:false;
+                foreach ($menuList as $k=>$vo) {
+                    $menuList[$k]['add_time']=date('Y-m-d', $vo['add_time']);
+                    $menuList[$k]['haveChild']=DB::name('menu')->where(['pid'=>$vo['id']])->where('status', '<>', 0)->count() ? true : false;
                     $menuList[$k]['menu_link']='/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_id']])->value('node_link').'/'.Db::name('node')->where(['status'=>1,'id'=>$vo['node_pid']])->value('node_link');
                     $menuList[$k]['menu_pid']='一级菜单';
                 }
             }
             $ajaxarr=['code'=>0,'data'=>$menuList];
             return json($ajaxarr);
-        }else{
+        } else {
             return View::fetch();
         }
     }
@@ -61,8 +61,9 @@ class Menu extends BaseController
     /**
      * 添加菜单
      */
-    public function add(){
-        if(request()->isAjax()){
+    public function add()
+    {
+        if (request()->isAjax()) {
             $data=request()->param();
             $validate = Validate::rule([
                 'menu_name|菜单名称' => 'require',
@@ -72,25 +73,25 @@ class Menu extends BaseController
             if (!$validate->check($data)) {
                 $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
             } else {
-                $pid=isset($data['pid'])?$data['pid']:0;
-                $menu_class=isset($data['menu_class'])?$data['menu_class']:'';
-                if($pid == 0 && $menu_class == ''){
+                $pid=isset($data['pid']) ? $data['pid'] : 0;
+                $menu_class=isset($data['menu_class']) ? $data['menu_class'] : '';
+                if ($pid == 0 && $menu_class == '') {
                     $ajaxarr=['code'=>100,'msg'=>'请选择正确的菜单图标'];
-                }elseif (Db::name('menu')->where(['menu_name'=>$data['menu_name'],'status'=>1])->find()){
+                } elseif (Db::name('menu')->where(['menu_name'=>$data['menu_name'],'status'=>1])->find()) {
                     $ajaxarr=['code'=>400,'msg'=>'菜单名称重复，请更换'];
-                }else{
+                } else {
                     $data['add_time']=time();
                     $data['add_id']=Session::get('login_user_id');
                     $add_id=Db::name('menu')->insertGetId($data);
-                    if($add_id){
+                    if ($add_id) {
                         $ajaxarr=['code'=>200,'msg'=>'菜单添加成功'];
-                    }else{
+                    } else {
                         $ajaxarr=['code'=>400,'msg'=>'菜单添加失败'];
                     }
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             //图标
             $icon_list = Db::name('icon')->select();
             View::assign('icon_list', $icon_list);
@@ -107,13 +108,14 @@ class Menu extends BaseController
     /**
      * 节点选择
      */
-    public function sub_node(){
+    public function sub_node()
+    {
         $data=request()->param();
-        $node_id=isset($data['node_id'])?trim($data['node_id']):'';
-        if($node_id){
+        $node_id=isset($data['node_id']) ? trim($data['node_id']) : '';
+        if ($node_id) {
             $sub_node_list=Db::name('node')->where(['pid'=>$node_id,'status'=>1])->select();
             $ajaxarr=['code'=>200,'sub_node_list'=>$sub_node_list];
-        }else{
+        } else {
             $ajaxarr=['code'=>100,'msg'=>'参数一级节点id丢失'];
         }
         return json($ajaxarr);
@@ -122,9 +124,10 @@ class Menu extends BaseController
     /**
      * 菜单编辑
      */
-    public function edit(){
+    public function edit()
+    {
         $data=request()->param();
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $validate = Validate::rule([
                 'id|菜单ID'=>'require',
                 'menu_name|菜单名称' => 'require',
@@ -134,25 +137,25 @@ class Menu extends BaseController
             if (!$validate->check($data)) {
                 $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
             } else {
-                $pid=isset($data['pid'])?$data['pid']:0;
-                $menu_class=isset($data['menu_class'])?$data['menu_class']:'';
-                if($pid == 0 && $menu_class == ''){
+                $pid=isset($data['pid']) ? $data['pid'] : 0;
+                $menu_class=isset($data['menu_class']) ? $data['menu_class'] : '';
+                if ($pid == 0 && $menu_class == '') {
                     $ajaxarr=['code'=>100,'msg'=>'请选择正确的菜单图标'];
-                }elseif (Db::name('menu')->where('id','<>',$data['id'])->where(['menu_name'=>$data['menu_name'],'status'=>1])->find()){
+                } elseif (Db::name('menu')->where('id', '<>', $data['id'])->where(['menu_name'=>$data['menu_name'],'status'=>1])->find()) {
                     $ajaxarr=['code'=>400,'msg'=>'菜单名称重复，请更换'];
-                }else{
+                } else {
                     $data['edit_time']=time();
                     $data['edit_id']=Session::get('login_user_id');
                     $save_id=Db::name('menu')->save($data);
-                    if($save_id){
+                    if ($save_id) {
                         $ajaxarr=['code'=>200,'msg'=>'菜单编辑成功'];
-                    }else{
+                    } else {
                         $ajaxarr=['code'=>400,'msg'=>'菜单编辑失败'];
                     }
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $id = isset($data['id']) ? $data['id'] : '';
             $menu_data = Db::name('menu')->where(['id' => $id])->field('id,menu_name,pid,menu_class,node_id,node_pid,sort')->find();
             View::assign('menu_data', $menu_data);
@@ -172,7 +175,8 @@ class Menu extends BaseController
     /**
      * 菜单删除
      */
-    public function delete(){
+    public function delete()
+    {
         $data=request()->param();
         $validate = Validate::rule([
             'id|菜单ID'=>'require'
@@ -180,18 +184,17 @@ class Menu extends BaseController
         if (!$validate->check($data)) {
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
-            if(Db::name('menu')->where(['pid'=>$data['id'],'status'=>1])->find()){
+            if (Db::name('menu')->where(['pid'=>$data['id'],'status'=>1])->find()) {
                 $ajaxarr=['code'=>400,'msg'=>'此菜单存在二级菜单，请先删除二级菜单'];
-            }else{
+            } else {
                 $save_id=Db::name('menu')->where(['id'=>$data['id']])->save(['status'=>0,'del_time'=>time(),'del_id'=>Session::get('login_user_id')]);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'菜单删除成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'菜单删除失败'];
                 }
             }
         }
         return json($ajaxarr);
     }
-
 }

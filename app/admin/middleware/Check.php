@@ -11,10 +11,8 @@ use think\response\Html;
 
 class Check
 {
-
     public function handle($request, \Closure $next)
     {
-
         if (Session::has('login_user_id') && Session::get('login_user_id') != '') {
             //判断权限
             $role_id = Db::name('user')->where(['id' => Session::get('login_user_id')])->value('role_id');
@@ -23,7 +21,7 @@ class Check
             $node_ids = Db::name('role')->where(['id' => $role_id, 'status' => 1])->value('node_ids') ? explode(',', Db::name('role')->where(['id' => $role_id, 'status' => 1])->value('node_ids')) : [];
 
 //            if (in_array($node_id, $node_ids) && in_array($node_pid, $node_ids)) {
-                return $next($request);
+            return $next($request);
 //            } else {
 //                if (request()->isAjax()) {
 //                    return json(['code'=>400,'msg'=>'暂无权限']);
@@ -36,9 +34,8 @@ class Check
                 return json(['code'=>400,'msg'=>'登录失效，请刷新页面重新登录']);
 //                return Html::create('<html><script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script><script src="/static/layer/layer.js"></script><script>layer.msg("登录失效，请刷新重新登录",{time:2000});setTimeout(function(){ top.location.href="/admin/Login/index";},1000)</script></html>','html',200);
             } else {
-                return Html::create('<html><script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script><script src="/static/layer/layer.js"></script><script>layer.msg("登录失效，请刷新重新登录",{time:2000});setTimeout(function(){ top.location.href="/admin/Login/index";},1000)</script></html>','html',200);
+                return Html::create('<html><script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script><script src="/static/layer/layer.js"></script><script>layer.msg("登录失效，请刷新重新登录",{time:2000});setTimeout(function(){ top.location.href="/admin/Login/index";},1000)</script></html>', 'html', 200);
             }
         }
     }
 }
-

@@ -23,38 +23,40 @@ class HospitalService extends BaseController
      * 菜单列表
      */
     public function index()
-    {if(request()->isAjax()){
-        $data = request()->param();
-        $page=isset($data['page'])?$data['page']:'1';
-        $limit=isset($data['limit'])?$data['limit']:'10';
-        $search=isset($data['search'])?trim($data['search']):'';
-        $where=[];
-        if($search){
-            $where[]=['name','like','%'.$search.'%'];
+    {
+        if (request()->isAjax()) {
+            $data = request()->param();
+            $page=isset($data['page']) ? $data['page'] : '1';
+            $limit=isset($data['limit']) ? $data['limit'] : '10';
+            $search=isset($data['search']) ? trim($data['search']) : '';
+            $where=[];
+            if ($search) {
+                $where[]=['name','like','%'.$search.'%'];
+            }
+            $userList = Db::name('hospital_service')->where($where)->page($page, $limit)->select()->toArray();
+            foreach ($userList as $k => $vo) {
+                $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
+                $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
+            }
+            $ajaxarr=['code'=>0,'data'=>$userList];
+            return json($ajaxarr);
+        } else {
+            return View::fetch();
         }
-        $userList = Db::name('hospital_service')->where($where)->page($page,$limit)->select()->toArray();
-        foreach ($userList as $k => $vo) {
-            $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
-            $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
-        }
-        $ajaxarr=['code'=>0,'data'=>$userList];
-        return json($ajaxarr);
-    }else{
-        return View::fetch();
-    }
     }
 
     /**
      * 上传
      */
-    public function upload(){
+    public function upload()
+    {
         $file = request()->file('file');
-        if(!Validate::fileSize($file,1024 * 1024 * 5)){
+        if (!Validate::fileSize($file, 1024 * 1024 * 5)) {
             $ajaxarr=['code'=>400,'msg'=>'图片过大'];
-        }else if(!Validate::fileExt($file,'jpeg,jpg,png,gif')){
+        } elseif (!Validate::fileExt($file, 'jpeg,jpg,png,gif')) {
             $ajaxarr=['code'=>400,'msg'=>'图片格式错误'];
-        }else{
-            $info = Filesystem::disk('public')->putFile('upload/hospital',$file);
+        } else {
+            $info = Filesystem::disk('public')->putFile('upload/hospital', $file);
             $img_path='/storage/'.$info;
             $ajaxarr=['code'=>0,'data'=>['src'=>$img_path]];
         }
@@ -64,9 +66,10 @@ class HospitalService extends BaseController
     /**
      * 菜单编辑
      */
-    public function edit(){
+    public function edit()
+    {
         $data=request()->param();
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $validate = Validate::rule([
                 'name|医院名称' => 'require',
                 'img|医院图片' => 'require',
@@ -75,22 +78,21 @@ class HospitalService extends BaseController
             if (!$validate->check($data)) {
                 $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
             } else {
-                    unset($data['file']);
-                    $data['updatedTime']=time();
-                    $save_id=Db::name('hospital_service')->save($data);
-                    if($save_id){
-                        $ajaxarr=['code'=>200,'msg'=>'编辑成功'];
-                    }else{
-                        $ajaxarr=['code'=>400,'msg'=>'编辑失败'];
-                    }
+                unset($data['file']);
+                $data['updatedTime']=time();
+                $save_id=Db::name('hospital_service')->save($data);
+                if ($save_id) {
+                    $ajaxarr=['code'=>200,'msg'=>'编辑成功'];
+                } else {
+                    $ajaxarr=['code'=>400,'msg'=>'编辑失败'];
+                }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $id = isset($data['id']) ? $data['id'] : '';
             $user_data = Db::name('hospital_service')->where(['id' => $id])->find();
             View::assign('service', $user_data);
             return View::fetch();
         }
     }
-
 }

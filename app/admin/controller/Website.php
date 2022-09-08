@@ -11,7 +11,6 @@ use think\facade\Session;
 use think\facade\Validate;
 use think\facade\View;
 
-
 class Website extends BaseController
 {
     protected $middleware = [Check::class];
@@ -20,10 +19,10 @@ class Website extends BaseController
      */
     public function edit()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             $data=request()->param();
-            $action=isset($data['action'])?$data['action']:'organ';
-            if($action == 'organ'){
+            $action=isset($data['action']) ? $data['action'] : 'organ';
+            if ($action == 'organ') {
                 $validate = Validate::rule([
                     'organ|关于机构' => 'require',
                     'everywhere|机构遍布数' => 'require',
@@ -32,11 +31,11 @@ class Website extends BaseController
                     'pure_num|纯名师教育数' => 'require',
                     'cooper_num|战略合作数' => 'require',
                 ]);
-            }elseif ($action == 'reason'){
+            } elseif ($action == 'reason') {
                 $validate = Validate::rule([
                     'reason|选择原因' => 'require'
                 ]);
-            }else{
+            } else {
                 $validate = Validate::rule([
                     'title|网站标题' => 'require',
                     'logo|logo' => 'require',
@@ -54,19 +53,19 @@ class Website extends BaseController
             } else {
                 $data['edit_time']=time();
                 $data['edit_id']=Session::get('login_user_id');
-                if(isset($data['file'])){
-                   unset($data['file']);
+                if (isset($data['file'])) {
+                    unset($data['file']);
                 }
                 unset($data['action']);
                 $save_id=Db::name('config')->where(['id'=>1])->save($data);
-                if($save_id){
+                if ($save_id) {
                     $ajaxarr=['code'=>200,'msg'=>'编辑成功'];
-                }else{
+                } else {
                     $ajaxarr=['code'=>400,'msg'=>'编辑失败'];
                 }
             }
             return json($ajaxarr);
-        }else {
+        } else {
             $config = Db::name('config')->where(['id' => 1])->find();
             View::assign('config', $config);
             return View::fetch();
@@ -76,20 +75,20 @@ class Website extends BaseController
     /**
      * 公共上传
      */
-    public function upload(){
+    public function upload()
+    {
         $data=request()->param();
-        $folder=isset($data['folder'])?$data['folder']:'avatar';
+        $folder=isset($data['folder']) ? $data['folder'] : 'avatar';
         $file = request()->file('file');
-        if(!Validate::fileSize($file,1024 * 1024 * 5)){
+        if (!Validate::fileSize($file, 1024 * 1024 * 5)) {
             $ajaxarr=['code'=>400,'msg'=>'图片过大'];
-        }else if(!Validate::fileExt($file,'jpeg,jpg,png,gif')){
+        } elseif (!Validate::fileExt($file, 'jpeg,jpg,png,gif')) {
             $ajaxarr=['code'=>400,'msg'=>'图片格式错误'];
-        }else{
-            $info = Filesystem::disk('public')->putFile('upload/'.$folder,$file);
+        } else {
+            $info = Filesystem::disk('public')->putFile('upload/'.$folder, $file);
             $img_path='/storage/'.$info;
             $ajaxarr=['code'=>0,'data'=>['src'=>$img_path]];
         }
         return json($ajaxarr);
     }
-
 }
