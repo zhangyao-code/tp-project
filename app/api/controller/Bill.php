@@ -9,6 +9,8 @@ use think\facade\Validate;
 
 class Bill extends BaseController
 {
+    //normal待支付 paiding 进行中 finished 已完成 cancel 已取消
+
     protected $middleware = [Check::class];
 
     public function save(): \think\response\Json
@@ -35,6 +37,32 @@ class Bill extends BaseController
         $add_id = Db::name('hospital_bill')->insertGetId($data);
         $data['id'] = $add_id;
         return json(['code'=>200,'data'=>$data]);
+    }
+
+    public function update()
+    {
+        if (request()->isGet()) {
+            return json("请使用 post 提交");
+        }
+        $validate = Validate::rule([
+            'id|要跟新信息的id'=> 'require',
+            'status|就诊人姓名' => 'require',
+        ]);
+        $data = request()->param();
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $bill = Db::name('hospital_bill')->where('id', '=', $data['id'])->find();
+
+        $bill['status'] = $data['status'];
+
+        try {
+            $add_id = Db::name('hospital_bill')->save($bill);
+        } catch (\Exception $exception) {
+            return json(['code' => 100, 'msg' => $exception->getMessage()]);
+        }
+        return json(['code' => 200, 'msg' =>'跟新成功']);
+
     }
 
     public function list()
