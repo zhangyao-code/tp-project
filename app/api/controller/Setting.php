@@ -21,5 +21,4 @@ class Setting extends BaseController
         $tableData = Db::name('setting')->where(['code' => 'relationship'])->find();
         return json(['code'=>200,'data'=>empty($tableData) ? [] : array_filter(explode('，', $tableData['content'])) ]);
     }
-
 }

@@ -62,7 +62,6 @@ class Bill extends BaseController
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
         return json(['code' => 200, 'msg' =>'跟新成功']);
-
     }
 
     public function list()
@@ -84,10 +83,9 @@ class Bill extends BaseController
             $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
             $userList[$k]['hospital'] =  Db::name('hospital')->where('id', '=', $vo['hospitalId'])->find();
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
-            $userList[$k]['patient'] =  Db::name('patient')->where('id', '=',$vo['patientId'])->find();
+            $userList[$k]['patient'] =  Db::name('patient')->where('id', '=', $vo['patientId'])->find();
         }
         $ajaxarr = ['code' => 0, 'data' => $userList];
         return json($ajaxarr);
     }
-
 }
