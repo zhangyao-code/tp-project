@@ -6,32 +6,20 @@ use app\BaseController;
 use think\facade\Db;
 use think\facade\Validate;
 
-class WeChat extends BaseController
+class User extends BaseController
 {
     public function index()
     {
         $data = request()->param();
         $validate = Validate::rule([
-            'code|登陆code' => 'require',
+            'id' => 'require',
         ]);
         if (!$validate->check($data)) {
             return json(['code' => 100, 'msg' => $validate->getError()]);
         }
-        $data = (new \app\api\WeChat\WeChat())->getJscode2session($data['code']);
-        $data['sign'] = md5($data['openid']);
-        $user_data=Db::name('user')->where(['username'=>$data['openid']])->where('status', '<>', 0)->find();
-        if(!empty($user_data)){
-            $token = md5($data['openid'].time());
-            Db::name('user_session')->insert([
-                'userId' =>$user_data['id'],
-                'token' => $token,
-                'alive_before' => time()+14400,
-                'create_time' => date('Y-m-d H:i:s', time()),
-                'update_time' => date('Y-m-d H:i:s', time()),
-            ]);
-            $data['token'] = $token;
-        }
-        return $this->_sayOk(['code'=>200,'data'=>$data]);
+        $user_data=Db::name('user')->where(['id'=>$data['id']])->where('status', '<>', 0)->find();
+
+        return $this->_sayOk(['code'=>200,'data'=>$user_data]);
     }
 
     public function initUser()
