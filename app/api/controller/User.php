@@ -56,7 +56,7 @@ class User extends BaseController
         $user = [
             'username'=>$data['openid'],
             'truename'=>$data['nickName'],
-            'avatar' => $data['avatar'],
+            'avatar' => $data['avatarUrl'],
             'status' =>1,
         ];
         $add_id=Db::name('user')->insertGetId($user);
