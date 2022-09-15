@@ -9,7 +9,7 @@ use think\facade\Validate;
 
 class Bill extends BaseController
 {
-    //normal待支付 paiding 进行中 finished 已完成 cancel 已取消
+    //normal待支付 padding 进行中 finished 已完成 cancel 已取消
 
     protected $middleware = [Check::class];
 
@@ -30,12 +30,15 @@ class Bill extends BaseController
         }
         $data['userId'] = $this->getCurrentUser()['id'];
         $data['treatmentTime'] = strtotime($data['treatmentTime']);
+        $service = Db::name('hospital_service')->where('id', '=', $data['serviceId'])->find();
         $data['status'] = 'normal';
+        $data['price'] = $service['price'];
         $data['sn'] = str_ireplace('.', '', uniqid(mt_rand(), true));
         $data['createdTime'] = time();
         $data['updatedTime'] = time();
         $add_id = Db::name('hospital_bill')->insertGetId($data);
         $data['id'] = $add_id;
+
         return json(['code'=>200,'data'=>$data]);
     }
 
