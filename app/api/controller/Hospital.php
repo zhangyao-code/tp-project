@@ -47,6 +47,18 @@ class Hospital extends BaseController
         return json($ajaxarr);
     }
 
+    public function serviceGet(): \think\response\Json
+    {
+        $data = request()->param();
+        $row = Db::name('hospital_service')->where('id', '=', $data['id'])->find();
+        $row['img'] = $this->host.$row['img'];
+        $row['createdTime'] = date('Y-m-d H:i:s', $row['createdTime']);
+        $row['updatedTime'] = date('Y-m-d H:i:s', $row['updatedTime']);
+        $ajaxarr=['code'=>200,'data'=>$row];
+
+        return json($ajaxarr);
+    }
+
     public function service(): \think\response\Json
     {
         $data = request()->param();
