@@ -59,6 +59,8 @@ abstract class BaseController
     {
     }
 
+    protected $host = 'http://shop.aenheer.com';
+
     /**
      * 验证数据
      * @access protected
