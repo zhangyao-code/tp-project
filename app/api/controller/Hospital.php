@@ -7,6 +7,19 @@ use think\facade\Db;
 
 class Hospital extends BaseController
 {
+    public function get(): \think\response\Json
+    {
+        $data = request()->param();
+        $row = Db::name('hospital')->where('id', '=', $data['id'])->find();
+        $row['createdTime'] = date('Y-m-d H:i:s', $row['createdTime']);
+        $row['updatedTime'] = date('Y-m-d H:i:s', $row['updatedTime']);
+        $departments = empty($row['departments']) ? [] : Db::name('hospital_department')->whereIn('id', explode(',', $row['departments']))->select()->toArray();
+        $row['departments'] = $departments;
+        $row['tags'] =empty($row['tags']) ? [] : explode(',', $row['tags']);
+        $ajaxarr=['code'=>200, 'data'=>$row];
+        return json($ajaxarr);
+    }
+
     public function list(): \think\response\Json
     {
         $data = request()->param();
@@ -18,6 +31,7 @@ class Hospital extends BaseController
             $where[]=['name','like','%'.$search.'%'];
         }
         $where[]=['deleted','=',0];
+        $total = Db::name('hospital')->where($where)->page($page, $limit)->count('id');
         $userList = Db::name('hospital')->where($where)->page($page, $limit)->select()->toArray();
         foreach ($userList as $k => $vo) {
             $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
@@ -26,7 +40,7 @@ class Hospital extends BaseController
             $userList[$k]['departments'] = $departments;
             $userList[$k]['tags'] =empty($vo['tags']) ? [] : explode(',', $vo['tags']);
         }
-        $ajaxarr=['code'=>200,'data'=>$userList];
+        $ajaxarr=['code'=>200,'total'=>$total, 'data'=>$userList];
         return json($ajaxarr);
     }
 

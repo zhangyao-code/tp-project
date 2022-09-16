@@ -107,7 +107,7 @@ abstract class BaseController
         if (!empty($this->user)) {
             return $this->user;
         }
-        $token = request()->cookie('token');
+        $token = $this->request->header('token');
         $user =Db::name('user_session')->where(['token'=>$token])->find();
         if (empty($user)) {
             return null;

@@ -42,6 +42,24 @@ class Patient extends BaseController
         return json(['code'=>200,'data'=>$data]);
     }
 
+    public function get(): \think\response\Json
+    {
+        $data = request()->param();
+        $validate = Validate::rule([
+            'id|就诊人id' => 'require',
+        ]);
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        try {
+            $list=Db::name('patient')->where('id', '=', $data['id'])->find();
+        } catch (\Exception $exception) {
+            return json(['code' => 100, 'msg' => $exception->getMessage()]);
+        }
+
+        return json(['code'=>200,'data'=>$list]);
+    }
+
     public function list(): \think\response\Json
     {
         $user = $this->getCurrentUser();

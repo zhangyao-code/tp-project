@@ -27,7 +27,7 @@ class Retail extends BaseController
         }
 
         $userList = Db::name('hospital_bill')->where($where)->page($page, $limit)->select()->toArray();
-
+        $total = Db::name('hospital_bill')->where($where)->page($page, $limit)->count('id');
         foreach ($userList as $k => $vo) {
             $userList[$k]['treatmentTime'] = date('Y-m-d H:i:s', $vo['treatmentTime']);
             $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
@@ -36,7 +36,7 @@ class Retail extends BaseController
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
             $userList[$k]['patient'] =  Db::name('patient')->where('id', '=', $vo['patientId'])->find();
         }
-        $ajaxarr = ['code' => 0, 'data' => $userList];
+        $ajaxarr = ['code' => 0, 'total' => $total, 'data' => $userList];
         return json($ajaxarr);
     }
 }
