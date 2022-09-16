@@ -32,7 +32,7 @@ class Hospital extends BaseController
             $where[]=['name','like','%'.$search.'%'];
         }
         $where[]=['deleted','=',0];
-        $total = Db::name('hospital')->where($where)->page($page, $limit)->count('id');
+        $total = Db::name('hospital')->where($where)->count('id');
         $userList = Db::name('hospital')->where($where)->page($page, $limit)->select()->toArray();
         foreach ($userList as $k => $vo) {
             $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
@@ -57,12 +57,14 @@ class Hospital extends BaseController
         if ($search) {
             $where[]=['name','like','%'.$search.'%'];
         }
+        $total = Db::name('hospital_service')->where($where)->count('id');
         $userList = Db::name('hospital_service')->where($where)->page($page, $limit)->select()->toArray();
         foreach ($userList as $k => $vo) {
+            $userList[$k]['img'] = $this->host.$vo['img'];
             $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
             $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
         }
-        $ajaxarr=['code'=>200,'data'=>$userList];
+        $ajaxarr=['code'=>200,'total'=>$total, 'data'=>$userList];
 
         return json($ajaxarr);
     }
