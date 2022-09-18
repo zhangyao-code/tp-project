@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\api\middleware\Check;
+use app\api\middleware\IDCard;
 use app\BaseController;
 use think\facade\Db;
 use think\facade\Validate;
@@ -53,6 +54,8 @@ class Patient extends BaseController
         }
         try {
             $list=Db::name('patient')->where('id', '=', $data['id'])->find();
+            $list['age'] =  IDCard::getAgeFromIdNo($list['IDCard']);
+
         } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
@@ -73,6 +76,10 @@ class Patient extends BaseController
         $where[]=['status', '=', 'normal'];
         try {
             $list=Db::name('patient')->where($where)->select()->toArray();
+
+            foreach ($list as &$row){
+                $row['age'] =  IDCard::getAgeFromIdNo($row['IDCard']);
+            }
         } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }

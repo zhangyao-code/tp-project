@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\api\middleware\Check;
+use app\api\middleware\IDCard;
 use app\BaseController;
 use think\facade\Db;
 use think\facade\Validate;
@@ -29,16 +30,23 @@ class Bill extends BaseController
             return json(['code' => 100, 'msg' => $validate->getError()]);
         }
         $data['userId'] = $this->getCurrentUser()['id'];
-        $data['treatmentTime'] = strtotime($data['treatmentTime']);
+
+        $data['treatmentTime'] = strtotime($data['treatmentTime']) == 0 ? $data['treatmentTime'] : strtotime($data['treatmentTime']);
+
         $service = Db::name('hospital_service')->where('id', '=', $data['serviceId'])->find();
         $data['status'] = 'normal';
         $data['price'] = $service['price'];
         $data['sn'] = str_ireplace('.', '', uniqid(mt_rand(), true));
         $data['createdTime'] = time();
         $data['updatedTime'] = time();
+        $patient = Db::name('patient')->where('id', '=', $data['patientId'])->find();
+
+        $patient['age'] = IDCard::getAgeFromIdNo($patient['IDCard']);
+        $data['patientData'] = json_encode($patient);
+
         $add_id = Db::name('hospital_bill')->insertGetId($data);
         $data['id'] = $add_id;
-
+        $data['patientData'] = $patient;
         return json(['code'=>200,'data'=>$data]);
     }
 
@@ -49,7 +57,7 @@ class Bill extends BaseController
         }
         $validate = Validate::rule([
             'id|要跟新信息的id'=> 'require',
-            'status|就诊人姓名' => 'require',
+            'status|订单状态' => 'require',
         ]);
         $data = request()->param();
         if (!$validate->check($data)) {
@@ -86,9 +94,29 @@ class Bill extends BaseController
             $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
             $userList[$k]['hospital'] =  Db::name('hospital')->where('id', '=', $vo['hospitalId'])->find();
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
-            $userList[$k]['patient'] =  Db::name('patient')->where('id', '=', $vo['patientId'])->find();
+            $userList[$k]['patient'] = json_decode($vo['patientData']);
+            unset($userList[$k]['patientData']);
         }
         $ajaxarr = ['code' => 0, 'data' => $userList];
         return json($ajaxarr);
     }
+
+    public function get()
+    {
+        $data = request()->param();
+        $where[] = ['id', '=',$data['id']];
+        $row = Db::name('hospital_bill')->where($where)->find();
+
+        $row['treatmentTime'] = date('Y-m-d H:i:s', $row['treatmentTime']);
+        $row['createdTime'] = date('Y-m-d H:i:s', $row['createdTime']);
+        $row['updatedTime'] = date('Y-m-d H:i:s', $row['updatedTime']);
+        $row['hospital'] =  Db::name('hospital')->where('id', '=', $row['hospitalId'])->find();
+        $row['service'] =  Db::name('hospital_service')->where('id', '=', $row['serviceId'])->find();
+        $row['patient'] = json_decode($row['patientData']);
+        unset($row['patientData']);
+        $ajaxarr = ['code' => 0, 'data' => $row];
+        return json($ajaxarr);
+    }
+
+
 }
