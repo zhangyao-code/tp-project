@@ -36,9 +36,9 @@ class Bill extends BaseController
         $service = Db::name('hospital_service')->where('id', '=', $data['serviceId'])->find();
         $data['status'] = 'normal';
         $data['price'] = $service['price'];
-        $data['sn'] = str_ireplace('.', '', uniqid(mt_rand(), true));
+        $data['sn'] = substr(md5(uniqid(rand(),1)),   8,   16);
         $data['createdTime'] = time();
-        $data['updatedTime'] = time();
+        $data['updatedTime'] = 0;
         $patient = Db::name('patient')->where('id', '=', $data['patientId'])->find();
 
         $patient['age'] = IDCard::getAgeFromIdNo($patient['IDCard']);
