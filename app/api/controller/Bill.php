@@ -34,15 +34,17 @@ class Bill extends BaseController
         $data['treatmentTime'] = strtotime($data['treatmentTime']) == 0 ? $data['treatmentTime'] : strtotime($data['treatmentTime']);
 
         $service = Db::name('hospital_service')->where('id', '=', $data['serviceId'])->find();
-        $data['status'] = 'normal';
         $data['price'] = $service['price'];
         $data['sn'] = substr(md5(uniqid(rand(),1)),   8,   16);
         $data['createdTime'] = time();
-        $data['updatedTime'] = 0;
+        $data['updatedTime'] = time();
         $patient = Db::name('patient')->where('id', '=', $data['patientId'])->find();
 
         $patient['age'] = IDCard::getAgeFromIdNo($patient['IDCard']);
         $data['patientData'] = json_encode($patient);
+        $data['paymentAmount'] = 0.01;
+        $data['status'] = 'normal';
+        $data['validityTime'] = time()+3600;
 
         $add_id = Db::name('hospital_bill')->insertGetId($data);
         $data['id'] = $add_id;
@@ -77,7 +79,7 @@ class Bill extends BaseController
 
     public function list()
     {
-        Db::name('hospital_bill')->where('validityTime', '>', 0)->where('validityTime', '<', time())->update(['status'=>'cancel']);
+        $this->refresh();
 
         $data = request()->param();
         $page = isset($data['page']) ? $data['page'] : '1';
@@ -89,7 +91,7 @@ class Bill extends BaseController
         }
         $where[] = ['userId', '=',$this->getCurrentUser()['id']];
         $userList = Db::name('hospital_bill')->where($where)->page($page, $limit)->select()->toArray();
-
+        $count = Db::name('hospital_bill')->where($where)->count();
         foreach ($userList as $k => $vo) {
             $userList[$k]['treatmentTime'] = date('Y-m-d H:i:s', $vo['treatmentTime']);
             $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
@@ -97,14 +99,21 @@ class Bill extends BaseController
             $userList[$k]['hospital'] =  Db::name('hospital')->where('id', '=', $vo['hospitalId'])->find();
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
             $userList[$k]['patient'] = json_decode($vo['patientData']);
+            if($vo['validityTime'] - time() >0){
+                $userList[$k]['validityTime'] = $vo['validityTime'] - time();
+            }else{
+                $userList[$k]['validityTime'] = 0;
+            }
             unset($userList[$k]['patientData']);
         }
-        $ajaxarr = ['code' => 0, 'data' => $userList];
+        $ajaxarr = ['code' => 200, 'total'=>$count, 'data' => $userList];
         return json($ajaxarr);
     }
 
     public function get()
     {
+        $this->refresh();
+
         $data = request()->param();
         $where[] = ['id', '=',$data['id']];
         $row = Db::name('hospital_bill')->where($where)->find();
@@ -115,10 +124,28 @@ class Bill extends BaseController
         $row['hospital'] =  Db::name('hospital')->where('id', '=', $row['hospitalId'])->find();
         $row['service'] =  Db::name('hospital_service')->where('id', '=', $row['serviceId'])->find();
         $row['patient'] = json_decode($row['patientData']);
+        if($row['validityTime'] - time() >0){
+            $row['validityTime'] = $row['validityTime'] - time();
+        }else{
+            $row['validityTime'] = 0;
+        }
         unset($row['patientData']);
-        $ajaxarr = ['code' => 0, 'data' => $row];
+        $ajaxarr = ['code' => 200, 'data' => $row];
         return json($ajaxarr);
     }
 
+    private function refresh(){
+        $update=[
+            ['validityTime', '>', 0],
+            ['validityTime', '<', time()],
+            ['status', '=', 'normal']
+        ];
+        Db::name('hospital_bill')->where($update)->update(['status'=>'cancel']);
+        $update=[
+            ['treatmentTime', '<', time()],
+            ['status', '=', 'padding']
+        ];
+        Db::name('hospital_bill')->where($update)->update(['status'=>'finished']);
+    }
 
 }

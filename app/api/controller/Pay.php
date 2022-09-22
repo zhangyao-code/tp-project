@@ -12,9 +12,8 @@ class Pay extends BaseController
 {
     public function index(): \think\response\Json
     {
-
-     $result =  (new PayV3())->wechartAddOrder('ddd', uniqid(),20, 'dfasdfasd');
-      return $this->_sayOk($result);
+     file_put_contents(__DIR__.'/test.txt', json_encode(request()->param()));
+      return $this->_sayOk([]);
     }
 
 
