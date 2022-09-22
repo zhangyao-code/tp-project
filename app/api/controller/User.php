@@ -49,9 +49,13 @@ class User extends BaseController
         }
         $bill = Db::name('hospital_bill')->where('id', '=', $data['billId'])->find();
         $service = Db::name('hospital_service')->where('id', '=', $bill['serviceId'])->find();
-        if($bill['status'] != 'normal'){
+
+        if(in_array($bill['status'], ['finished', 'cancel'])){
             return $this->_sayOk(['code'=>100,'data'=>'订单存在问题，不支持支付']);
         }
+        $bill['status'] = 'padding';
+        $bill['validityTime'] = time()+3600;
+        Db::name('hospital_bill')->save($bill);
         $result =  (new PayV3())->wechartAddOrder($service['name'], $bill['sn'],$bill['paymentAmount']*100, $this->getCurrentUser()['username']);
 
         return $this->_sayOk(['code'=>200,'data'=>$result]);

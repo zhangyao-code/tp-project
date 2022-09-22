@@ -77,6 +77,8 @@ class Bill extends BaseController
 
     public function list()
     {
+        Db::name('hospital_bill')->where('validityTime', '>', 0)->where('validityTime', '<', time())->update(['status'=>'cancel']);
+
         $data = request()->param();
         $page = isset($data['page']) ? $data['page'] : '1';
         $limit = isset($data['limit']) ? $data['limit'] : '10';

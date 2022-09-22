@@ -40,39 +40,6 @@ class WeChat
         return 'http://shop.aenheer.com/'.'storage/wechat/'.$userId.'.jpg';;
     }
 
-    public function payTransactions()
-    {
-        $AppId = self::$kF_AppId;
-        $AppSecret = self::$KF_AppSecret;
-        $url = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";
-        $params = [
-            'appid' => $AppId,
-            'mchid' => '1631246707',
-            'description' => '',
-            'out_trade_no' => uniqid(),
-            'time_expire' => date("c", time() + 3600),
-            'notify_url' => 'https://shop.aenheer.com/api/Tokens',
-            'amount' => [
-                'total' => 3000,
-                'currency' => 'CNY'
-            ],
-            'payer' => [
-                'openid' => 'openid'
-            ],
-        ];
-        $authorization = $this->getV3Sign($url, "POST", $param);
-        $headers = [
-            'Authorization:' . $authorization,
-            'Accept:application/json',
-            'Content-Type:application/json;charset=utf-8',
-            'User-Agent:Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-        ];
-        $res = $this->linkCurl($url, 'POST', $params, $headers);
-        $res = json_decode($res, true);
-
-        return $res;
-    }
-
     private function getV3Sign($url, $http_method, $body)
     {
         $nonce = strtoupper($this->createNonceStr(32));

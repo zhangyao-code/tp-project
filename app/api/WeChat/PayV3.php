@@ -30,7 +30,8 @@ class PayV3
         $data['description'] = $name;//商品描述
         $data['attach'] = $ordernumber;//订单编号
         $data['out_trade_no'] = $out_trade_no;//支付订单编号
-        $data['notify_url'] = "http://dev.adminpro.com/api/pay";//回调接口
+        $data['notify_url'] = "https://shop.aenheer.com/api/Pay";//回调接口
+        $data['time_expire'] = date("c", time() + 3600);
         $data['amount']['total'] = $money;
         $data['payer']['openid'] = $openid;//用户付款的openID
         $data = json_encode($data); //转json串
