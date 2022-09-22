@@ -27,7 +27,9 @@
         "phpmailer/phpmailer": "^6.1",
         "topthink/think-multi-app": "^1.0",
         "symfony/polyfill-mbstring": "^1.26.0",
-        "friendsofphp/php-cs-fixer": "v3.4.0"
+        "friendsofphp/php-cs-fixer": "v3.4.0",
+        "wechatpay/wechatpay-guzzle-middleware": "^0.2.2",
+        "wechatpay/wechatpay": "^1.4"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\BaseController;
+use GuzzleHttp\Exception\RequestException;
 use think\facade\Db;
 use think\facade\Validate;
 
@@ -35,6 +36,16 @@ class WeChat extends BaseController
             $user_data=Db::name('user')->where('id', '=', $add_id)->find();
         }
         $token = md5($data['openid'].time());
+        if(!empty($data['userId'])){
+            $user =Db::name('retail')->where('parentUserId', '=', $data['userId'])->where('userId', '=',$user_data['id'])->find();
+            if(empty($user)){
+                Db::name('retail')->insertGetId([
+                    'userId'=>$user_data['id'],
+                    'parentUserId' => $data['userId'],
+                    'createdTime' => time()
+                ]);
+            }
+        }
         Db::name('user_session')->insert([
             'userId' =>$user_data['id'],
             'token' => $token,

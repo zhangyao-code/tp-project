@@ -45,7 +45,17 @@ class Withdraw extends BaseController
 
         $where[] = ['userId', '=',$this->getCurrentUser()['id']];
         $userList = Db::name('withdraw')->where($where)->page($page, $limit)->select()->toArray();
-        $ajaxarr = ['code' => 0, 'data' => $userList];
+        $ajaxarr = ['code' => 200, 'data' => $userList];
+        return json($ajaxarr);
+    }
+
+    public function getWithdrawAmount(): \think\response\Json
+    {
+        $name = Db::name('withdraw')->getTable();
+        $sql="SELECT sum(amount) as amount FROM {$name} where userId = {$this->getCurrentUser()['id']}";
+        $result = Db::query($sql);
+       var_dump($result);
+        $ajaxarr = ['code' => 200, 'data' => 1000];
         return json($ajaxarr);
     }
 
