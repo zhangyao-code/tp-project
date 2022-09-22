@@ -26,6 +26,10 @@ class Withdraw extends BaseController
         if (!$validate->check($data)) {
             return json(['code' => 100, 'msg' => $validate->getError()]);
         }
+        $money = $this->getMoney();
+        if ($money < $data['amount']) {
+            return json(['code' => 100, 'msg' => '提现金额超过能提现的最大值']);
+        }
         $data['userId'] = $this->getCurrentUser()['id'];
         $data['status'] = 'normal';
         $data['createdTime'] = time();
@@ -33,7 +37,7 @@ class Withdraw extends BaseController
         $add_id = Db::name('withdraw')->insertGetId($data);
         $data['id'] = $add_id;
 
-        return json(['code'=>200,'data'=>$data]);
+        return json(['code' => 200, 'data' => $data]);
     }
 
 
@@ -43,7 +47,7 @@ class Withdraw extends BaseController
         $page = isset($data['page']) ? $data['page'] : '1';
         $limit = isset($data['limit']) ? $data['limit'] : '10';
 
-        $where[] = ['userId', '=',$this->getCurrentUser()['id']];
+        $where[] = ['userId', '=', $this->getCurrentUser()['id']];
         $userList = Db::name('withdraw')->where($where)->page($page, $limit)->select()->toArray();
         $ajaxarr = ['code' => 200, 'data' => $userList];
         return json($ajaxarr);
@@ -51,12 +55,30 @@ class Withdraw extends BaseController
 
     public function getWithdrawAmount(): \think\response\Json
     {
-        $name = Db::name('withdraw')->getTable();
-        $sql="SELECT sum(amount) as amount FROM {$name} where userId = {$this->getCurrentUser()['id']}";
-        $result = Db::query($sql);
-       var_dump($result);
-        $ajaxarr = ['code' => 200, 'data' => 1000];
+        $ajaxarr = ['code' => 200, 'data' => $this->getMoney()];
         return json($ajaxarr);
+    }
+
+    protected function getMoney()
+    {
+        $count = Db::name('withdraw')
+            ->field('sum(amount) as money')
+            ->where('userId', '=', $this->getCurrentUser()['id'])
+            ->where('status', '<>', 'reject')
+            ->select()->toArray();
+        $count = empty($count[0]['money']) ? 0 : $count[0]['money'];
+        $users = Db::name('retail')
+            ->where('parentUserId', '=', $this->getCurrentUser()['id'])->select()->toArray();
+
+        $userIds = empty($users) ? [-1] : array_column($users, 'userId');
+        $bills = Db::name('hospital_bill')
+            ->field('sum(paymentAmount) as money')
+            ->where('userId', 'in', $userIds)
+            ->where('status', 'in', ['padding', 'finished'])
+            ->select()->toArray();
+
+        $billsCount = empty($bills[0]['money']) ? 0 : $bills[0]['money'];
+        return $billsCount <= $count ? 0 : $billsCount - $count;
     }
 
 }
