@@ -27,4 +27,15 @@ class Setting extends BaseController
         $tableData = Db::name('setting')->where(['code' => 'relationship'])->find();
         return json(['code'=>200,'data'=>empty($tableData) ? [] : array_filter(explode('，', $tableData['content'])) ]);
     }
+
+    public function carousel(): \think\response\Json
+    {
+        $tableData = Db::name('setting')->where(['code' => 'carouselSetting'])->find();
+        $data = array_filter(json_decode($tableData['content'], true));
+        foreach ($data as &$value){
+            $value = $this->host.$value;
+        }
+        return json(['code'=>200,'data'=>empty($data) ? [] : array_values($data) ]);
+
+    }
 }

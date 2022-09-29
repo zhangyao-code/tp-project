@@ -11,6 +11,10 @@
     }
     .edui-default .edui-editor{
         position:unset !important;
+        z-index: 1000!important;
+    }
+    .xm-select-dl{
+        z-index: 999999999!important;
     }
 </style>
 <link rel="stylesheet" href="/static/layui/formSelects/formSelects-v4.css"/>
@@ -26,12 +30,6 @@
         <label class="layui-form-label">简介</label>
         <div class="layui-input-inline">
             <textarea type="text" name="summary" style="min-height:70px " autocomplete="off" placeholder="" class="layui-input">{$hospital_data.summary}</textarea>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">详细介绍</label>
-        <div class="layui-input-inline">
-            <script id="editor" name="basic" type="text/plain" placeholder="详细介绍">{$hospital_data.basic|raw}</script>
         </div>
     </div>
     <div class="layui-form-item">
@@ -52,11 +50,18 @@
             <select name="tags" id="deptId"
                     xm-select="select2">
                 {volist name="tags" id="vo"}
-                  <option value="{$vo}"  {if condition="in_array($vo,$hospital_data['tags'])"}selected{/if}>{$vo}</option>
+                <option value="{$vo}"  {if condition="in_array($vo,$hospital_data['tags'])"}selected{/if}>{$vo}</option>
                 {/volist}
             </select>
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细介绍</label>
+        <div class="layui-input-inline">
+            <script id="editor" name="basic" type="text/plain" placeholder="详细介绍">{$hospital_data.basic|raw}</script>
+        </div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">医院图片</label>
         <div class="layui-input-inline">

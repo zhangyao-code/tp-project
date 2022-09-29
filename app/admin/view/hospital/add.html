@@ -9,6 +9,13 @@
     .layui-input-inline {
         width: 450px !important;
     }
+    .edui-default .edui-editor{
+        position:unset !important;
+        z-index: 1000!important;
+    }
+    .xm-select-dl{
+        z-index: 999999999!important;
+    }
 </style>
 <link rel="stylesheet" href="/static/layui/formSelects/formSelects-v4.css"/>
 
@@ -27,12 +34,6 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">详细介绍</label>
-        <div class="layui-input-inline">
-            <script id="editor" name="basic" type="text/plain" placeholder="详细介绍"></script>
-        </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">科室</label>
         <div class="layui-input-inline">
             <select name="departments" id="departments"
@@ -46,15 +47,21 @@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">标签</label>
-            <div class="layui-input-inline">
-                <select name="tags" id="deptId"
-                        xm-select="select2">
-                    <option value=""></option>
-                    {volist name="tags" id="vo"}
-                      <option value="{$vo}">{$vo}</option>
-                    {/volist}
-                </select>
-            </div>
+        <div class="layui-input-inline">
+            <select name="tags" id="deptId"
+                    xm-select="select2">
+                <option value=""></option>
+                {volist name="tags" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细介绍</label>
+        <div class="layui-input-inline">
+            <script id="editor" name="basic" type="text/plain" placeholder="详细介绍"></script>
+        </div>
     </div>
 
 
