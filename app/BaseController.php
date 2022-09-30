@@ -54,12 +54,12 @@ abstract class BaseController
         $this->initialize();
     }
 
+    public $currentUser = null;
+
     // 初始化
     protected function initialize()
     {
     }
-
-    protected $host = 'http://shop.aenheer.com';
 
     /**
      * 验证数据
@@ -106,8 +106,8 @@ abstract class BaseController
 
     public function getCurrentUser()
     {
-        if (!empty($this->user)) {
-            return $this->user;
+        if(!empty($this->currentUser)){
+            $this->currentUser;
         }
         $token = $this->request->header('token');
         $user =Db::name('user_session')->where(['token'=>$token])->find();
@@ -115,6 +115,9 @@ abstract class BaseController
             return null;
         }
         $this->user = Db::name('user')->where(['id'=>$user['userId']])->find();
-        return $this->user;
+
+        $this->currentUser = new CurrentUser();
+        $this->currentUser ->setCurrentUser($this->user);
+        return $this->currentUser;
     }
 }
