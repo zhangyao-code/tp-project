@@ -85,6 +85,8 @@ class Hospital extends BaseController
             View::assign('tags', array_filter(explode('，', $tableData['content'])));
             $departments = Db::name('hospital_department')->where('status', '=', 'normal')->select()->toArray();
             View::assign('departments', $departments);
+            $tableData = Db::name('setting')->where(['code' => 'city'])->find();
+            View::assign('city', array_filter(explode('，', $tableData['content'])));
             return View::fetch();
         }
     }
@@ -145,6 +147,8 @@ class Hospital extends BaseController
             View::assign('tags', array_filter(explode('，', $tableData['content'])));
             $departments = Db::name('hospital_department')->where('status', '=', 'normal')->select()->toArray();
             View::assign('departments', $departments);
+            $tableData = Db::name('setting')->where(['code' => 'city'])->find();
+            View::assign('city', array_filter(explode('，', $tableData['content'])));
             return View::fetch();
         }
     }

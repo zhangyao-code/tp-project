@@ -16,6 +16,9 @@
     .xm-select-dl{
         z-index: 999999999!important;
     }
+    .layui-anim-upbit {
+        z-index: 999999999!important;
+    }
 </style>
 <link rel="stylesheet" href="/static/layui/formSelects/formSelects-v4.css"/>
 
@@ -51,6 +54,17 @@
                     xm-select="select2">
                 {volist name="tags" id="vo"}
                 <option value="{$vo}"  {if condition="in_array($vo,$hospital_data['tags'])"}selected{/if}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属城市</label>
+        <div class="layui-input-inline">
+            <select name="city" id="city">
+                <option value=""></option>
+                {volist name="city" id="vo"}
+                <option value="{$vo}" {if condition="$vo == $hospital_data['city']"}selected{/if} >{$vo}</option>
                 {/volist}
             </select>
         </div>

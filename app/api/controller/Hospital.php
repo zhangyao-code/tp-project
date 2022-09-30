@@ -27,9 +27,13 @@ class Hospital extends BaseController
         $page=isset($data['page']) ? $data['page'] : '1';
         $limit=isset($data['limit']) ? $data['limit'] : '10';
         $search=isset($data['search']) ? trim($data['search']) : '';
+        $city=isset($data['city']) ? trim($data['city']) : '';
         $where=[];
         if ($search) {
             $where[]=['name','like','%'.$search.'%'];
+        }
+        if ($city) {
+            $where[]=['city','=', $city];
         }
         $where[]=['deleted','=',0];
         $total = Db::name('hospital')->where($where)->count('id');
