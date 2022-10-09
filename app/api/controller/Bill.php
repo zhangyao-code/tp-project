@@ -40,9 +40,10 @@ class Bill extends BaseController
         $data['updatedTime'] = time();
         $patient = Db::name('patient')->where('id', '=', $data['patientId'])->find();
 
+        $coupon = empty($data['couponId']) ? [] : Db::name('coupon')->where('id', '=', $data['couponId'])->find();
         $patient['age'] = IDCard::getAgeFromIdNo($patient['IDCard']);
         $data['patientData'] = json_encode($patient);
-        $data['paymentAmount'] = 0.01;
+        $data['paymentAmount'] = empty($coupon) ? $service['price'] : ($coupon['amount'] > $service['price'] ? 0 :$service['price']-$coupon['amount']);
         $data['status'] = 'normal';
         $data['validityTime'] = time()+3600;
 

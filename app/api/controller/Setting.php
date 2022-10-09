@@ -44,4 +44,10 @@ class Setting extends BaseController
         $tableData = Db::name('setting')->where(['code' => 'city'])->find();
         return json(['code'=>200,'data'=>empty($tableData) ? [] : array_filter(explode('，', $tableData['content'])) ]);
     }
+
+    public function introduce(): \think\response\Json
+    {
+        $tableData = Db::name('setting')->where(['code' => 'anheAbout'])->find();
+        return json(['code'=>200,'data'=>$tableData['content'] ]);
+    }
 }
