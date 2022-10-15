@@ -59,7 +59,7 @@ abstract class BaseController
     {
     }
 
-    protected $host = 'http://shop.aenheer.com';
+    protected $host = 'https://shop.aenheer.com';
 
     /**
      * 验证数据
