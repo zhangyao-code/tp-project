@@ -30,8 +30,12 @@ class User extends BaseController
             $limit=isset($data['limit']) ? $data['limit'] : '10';
             $search=isset($data['search']) ? trim($data['search']) : '';
             $where=[];
+
             if ($search) {
                 $where[]=['username|truename','like','%'.$search.'%'];
+            }
+            if (isset($data['retail']) && $data['retail'] !='all') {
+                $where[]=['retail','=',$data['retail']];
             }
             $where[]=['status','<>',0];
 
@@ -173,7 +177,7 @@ class User extends BaseController
     /**
      * 菜单删除
      */
-    public function delete()
+    public function retail()
     {
         $data=request()->param();
         $validate = Validate::rule([
@@ -183,20 +187,11 @@ class User extends BaseController
             $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
         } else {
             $type=isset($data['type']) ? $data['type'] : '1';
-            if ($type == 0) {
-                $save_id=Db::name('user')->where(['id'=>$data['id']])->save(['status'=>0,'del_time'=>time(),'del_id'=>Session::get('login_user_id')]);
-                if ($save_id) {
-                    $ajaxarr=['code'=>200,'msg'=>'账户删除成功'];
-                } else {
-                    $ajaxarr=['code'=>400,'msg'=>'账户删除失败'];
-                }
+            $save_id=Db::name('user')->where(['id'=>$data['id']])->save(['retail'=>$type,'edit_time'=>time(),'edit_id'=>Session::get('login_user_id')]);
+            if ($save_id) {
+                $ajaxarr=['code'=>200,'msg'=>'账户修改成功'];
             } else {
-                $save_id=Db::name('user')->where(['id'=>$data['id']])->save(['status'=>$type,'edit_time'=>time(),'edit_id'=>Session::get('login_user_id')]);
-                if ($save_id) {
-                    $ajaxarr=['code'=>200,'msg'=>'账户状态修改成功'];
-                } else {
-                    $ajaxarr=['code'=>400,'msg'=>'账户状态修改失败'];
-                }
+                $ajaxarr=['code'=>400,'msg'=>'账户修改失败'];
             }
         }
         return json($ajaxarr);

@@ -54,6 +54,20 @@
             </div>
         </div>
         <div class="layui-inline">
+            <label class="layui-form-label">分销设置：</label>
+            <div class="layui-input-inline">
+                <select name="type" id="retail" style="padding: 4px;
+    width: 80px;
+    height: 36px;
+    border-color: #e5e0e0;">
+                    <option value="all">全部</option>
+                    <option value="0">关闭</option>
+                    <option value="1">开启</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-inline">
             <div class="layui-input-inline">
                 <button id="search" type="button" class="layui-btn" data-type="reload">搜索</button>
 <!--                <button type="button" class="layui-btn layui-btn-warm" data-type="reset">重置</button>-->
@@ -74,7 +88,7 @@
 </script>
 
 <script type="text/html" id="show_status">
-    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="正常|停用" lay-filter="changeStatus" {{ d.status == 1 ? 'checked' : '' }}>
+    <input type="checkbox" name="retail" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="changeStatus" {{ d.retail == 1 ? 'checked' : '' }}>
 </script>
 
 <script type="text/html" id="barDemo">
@@ -102,12 +116,12 @@
             ,cellMinWidth: 80
             ,cols: [ [ //表头
                 { fixed: 'left',field:'id',sort: true, title: 'ID', width:'8%', align:'center'}
-                ,{fixed: 'left',field: 'username', title: '账户名称',align:'center',width:'13%'}
+                // ,{fixed: 'left',field: 'username', title: '账户名称',align:'center',width:'13%'}
                 ,{field: 'avatar', title: '头像',templet: '#show_avatar',align:'center',width:'10%'}
-                ,{field: 'truename', title: '真实姓名', align:'center',width:'13%'}
-                ,{field: 'telphone', title: '电话号码',align:'center',width:'15%'}
-                ,{field: 'email', title: '邮箱', align:'center',width:'16%'}
-                ,{field: 'status', title: '状态',templet: '#show_status',align:'center',width:'11%',style:'cursor:pointer;'}
+                ,{field: 'truename', title: '真实姓名', align:'center',width:'20%'}
+                ,{field: 'telphone', title: '电话号码',align:'center',width:'20%'}
+                ,{field: 'email', title: '邮箱', align:'center',width:'20%'}
+                ,{field: 'retail', title: '分销设置',templet: '#show_status',align:'center',width:'11%',style:'cursor:pointer;'}
                 ,{fixed: 'right',title: '操作', width:'15%',align:'center', toolbar: '#barDemo'}
             ] ]
         });
@@ -128,6 +142,7 @@
             reload: function(){
                 var search = $('#search_content').val();
                 var telphone=$('#telphone').val();
+                var retail = $('#retail').val();
                 //执行重载
                 table.reload('tblId', {
                     page: {
@@ -135,7 +150,8 @@
                     }
                     ,where: {
                         search: search,
-                        telphone:telphone
+                        telphone:telphone,
+                        retail:retail
                     }
                 }, 'data');
             }
@@ -173,11 +189,11 @@
             if(obj.elem.checked){
                 var type = 1;
             }else{
-                var type = 2;
+                var type = 0;
             }
             $.ajax({
                 type:'get',
-                url:'/admin/User/delete',
+                url:'/admin/User/retail',
                 data:{'id':this.value,'type':type},
                 success:function(data){
                     layer.msg(data.msg);

@@ -68,6 +68,13 @@ class Hospital extends BaseController
             $userList[$k]['img'] = $vo['img']?$this->host.$vo['img']:$vo['img'];
             $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
             $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
+            $userList[$k]['belongsType'] = '';
+            if(in_array($vo['id'], [1,2,3])){
+                $userList[$k]['belongsType'] = '就医陪诊';
+            }
+            if(in_array($vo['id'], [9,10,11])){
+                $userList[$k]['belongsType'] = '检查预约';
+            }
         }
         $ajaxarr=['code'=>200,'total'=>$total, 'data'=>$userList];
 
