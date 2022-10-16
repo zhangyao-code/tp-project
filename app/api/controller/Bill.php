@@ -38,6 +38,8 @@ class Bill extends BaseController
         $data['sn'] = substr(md5(uniqid(rand(),1)),   8,   16);
         $data['createdTime'] = time();
         $data['updatedTime'] = time();
+        $data['otherData'] = json_encode($data['otherData']);
+
         $patient = Db::name('patient')->where('id', '=', $data['patientId'])->find();
 
         $coupon = empty($data['couponId']) ? [] : Db::name('coupon')->where('id', '=', $data['couponId'])->find();
@@ -100,6 +102,7 @@ class Bill extends BaseController
             $userList[$k]['hospital'] =  Db::name('hospital')->where('id', '=', $vo['hospitalId'])->find();
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
             $userList[$k]['patient'] = json_decode($vo['patientData']);
+            $userList[$k]['otherData'] = json_decode($vo['otherData']);
             if($vo['validityTime'] - time() >0){
                 $userList[$k]['validityTime'] = $vo['validityTime'] - time();
             }else{
@@ -125,6 +128,7 @@ class Bill extends BaseController
         $row['hospital'] =  Db::name('hospital')->where('id', '=', $row['hospitalId'])->find();
         $row['service'] =  Db::name('hospital_service')->where('id', '=', $row['serviceId'])->find();
         $row['patient'] = json_decode($row['patientData']);
+        $row['otherData'] = json_decode($row['otherData']);
         if($row['validityTime'] - time() >0){
             $row['validityTime'] = $row['validityTime'] - time();
         }else{
