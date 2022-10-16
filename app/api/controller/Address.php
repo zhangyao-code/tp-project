@@ -37,6 +37,25 @@ class Address extends BaseController
         return json(['code'=>200,'data'=>$data]);
     }
 
+    public function get(): \think\response\Json
+    {
+        if (request()->isGet()) {
+            return json("请使用 post 提交");
+        }
+        $data = request()->param();
+        $validate = Validate::rule([
+            'id|地址id' => 'require',
+        ]);
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $data = Db::name('address')->where('id', '=', $data['id'])->find();
+
+
+        $data['setting']= json_decode($data['setting'], true);
+        return json(['code'=>200,'data'=>$data]);
+    }
+
     public function list()
     {
         $data = request()->param();
@@ -50,6 +69,53 @@ class Address extends BaseController
         }
         $ajaxarr = ['code' => 200, 'total'=>$count, 'data' => $userList];
         return json($ajaxarr);
+    }
+
+    public function update()
+    {
+        if (request()->isGet()) {
+            return json("请使用 post 提交");
+        }
+        $validate = Validate::rule([
+            'id|要跟新信息的id'=> 'require',
+            'setting|地址设置' => 'require',
+        ]);
+        $data = request()->param();
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $bill = Db::name('address')->where('id', '=', $data['id'])->find();
+
+        $bill['setting'] = json_encode($data['setting']);
+
+        try {
+            $add_id = Db::name('address')->save($bill);
+        } catch (\Exception $exception) {
+            return json(['code' => 100, 'msg' => $exception->getMessage()]);
+        }
+        return json(['code' => 200, 'msg' =>'更新成功']);
+    }
+
+    public function delete()
+    {
+        if (request()->isGet()) {
+            return json("请使用 post 提交");
+        }
+        $validate = Validate::rule([
+            'id|要删除信息的id'=> 'require',
+        ]);
+        $data = request()->param();
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $bill = Db::name('address')->where('id', '=', $data['id'])->find();
+
+        try {
+            Db::name('address')->delete($bill);
+        } catch (\Exception $exception) {
+            return json(['code' => 100, 'msg' => $exception->getMessage()]);
+        }
+        return json(['code' => 200, 'msg' =>'删除成功']);
     }
 
 }

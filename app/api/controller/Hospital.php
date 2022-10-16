@@ -58,11 +58,14 @@ class Hospital extends BaseController
         $limit=isset($data['limit']) ? $data['limit'] : '10';
         $search=isset($data['search']) ? trim($data['search']) : '';
         $where=[];
+
         if ($search) {
             $where[]=['name','like','%'.$search.'%'];
         }
         $total = Db::name('hospital_service')->where($where)->count('id');
         $userList = Db::name('hospital_service')->where($where)->page($page, $limit)->select()->toArray();
+
+        $result = [];
         foreach ($userList as $k => $vo) {
             $userList[$k]['detailImg'] = $this->host.$vo['detailImg'];
             $userList[$k]['img'] = $vo['img']?$this->host.$vo['img']:$vo['img'];
@@ -71,11 +74,20 @@ class Hospital extends BaseController
             $userList[$k]['belongsType'] = '';
             if(in_array($vo['id'], [1,2,3])){
                 $userList[$k]['belongsType'] = '就医陪诊';
+                $result['就医陪诊'][] = $userList[$k];
+
             }
             if(in_array($vo['id'], [9,10,11])){
                 $userList[$k]['belongsType'] = '检查预约';
+                $result['检查预约'][] = $userList[$k];
+
             }
         }
+
+        if(!empty($data['belongsType'])){
+            $userList = $result[$data['belongsType']];
+        }
+
         $ajaxarr=['code'=>200,'total'=>$total, 'data'=>$userList];
 
         return json($ajaxarr);

@@ -77,7 +77,32 @@ class Bill extends BaseController
         } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
-        return json(['code' => 200, 'msg' =>'跟新成功']);
+        return json(['code' => 200, 'msg' =>'更新成功']);
+    }
+
+    public function cancel(){
+        $validate = Validate::rule([
+            'id|要跟新信息的id'=> 'require',
+        ]);
+        $data = request()->param();
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $bill = Db::name('hospital_bill')->where('id', '=', $data['id'])->find();
+
+        if($bill['status'] == 'finished'){
+            $bill['status'] = 'review';
+        }else{
+            $bill['status'] = 'cancel';
+        }
+
+        try {
+            $add_id = Db::name('hospital_bill')->save($bill);
+        } catch (\Exception $exception) {
+            return json(['code' => 100, 'msg' => $exception->getMessage()]);
+        }
+
+        return json(['code' => 200, 'data' =>$bill]);
     }
 
     public function list()
@@ -135,6 +160,8 @@ class Bill extends BaseController
             $row['validityTime'] = 0;
         }
         unset($row['patientData']);
+        $coupon = empty($data['couponId']) ? [] : Db::name('coupon')->where('id', '=', $data['couponId'])->find();
+        $row['coupon'] = empty($coupon) ? 0 :$coupon['amount'];
         $ajaxarr = ['code' => 200, 'data' => $row];
         return json($ajaxarr);
     }
