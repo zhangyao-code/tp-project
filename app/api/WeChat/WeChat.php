@@ -7,9 +7,6 @@ namespace app\api\WeChat;
 
 class WeChat
 {
-    protected  $mchid = 1631246707;
-
-    protected  $serial='';
     /**
      * 微信开放平台appid
      * @var string
@@ -22,58 +19,27 @@ class WeChat
      */
     protected static $KF_AppSecret = 'b554a050829f3ceca76f84ecaab4a46d';
 
+
+
     public function getQRCode($userId)
     {
-        $file = __DIR__.'/../../../public/storage/wechat/'.$userId.'.jpg';
-        if(file_exists($file)){
-            return 'http://shop.aenheer.com/'.'storage/wechat/'.$userId.'.jpg';
-        }
+        $file = __DIR__.'/../../../public/storage/wechat/'.$userId.'.png';
+      
+        // if(file_exists($file)){
+        //     return 'https://shop.aenheer.com/'.'storage/wechat/'.$userId.'.png';
+        // }
         $token = $this->getAccessToken();
         $url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=". $token['access_token'];
         $data = [
-            "path" => "page/index/index?id=".$userId,
-            "width" => 430
+            "path" => "/pages/index/index?id=".$userId,
+            "width" => 630
         ];
 
         $res = $this->linkCurl($url, 'POST', $data);
+      
         file_put_contents($file, $res);
-        return 'http://shop.aenheer.com/'.'storage/wechat/'.$userId.'.jpg';;
+        return 'https://shop.aenheer.com/'.'storage/wechat/'.$userId.'.png';;
     }
-
-    private function getV3Sign($url, $http_method, $body)
-    {
-        $nonce = strtoupper($this->createNonceStr(32));
-        $timestamp = time();
-        $url_parts = parse_url($url);
-        $canonical_url = ($url_parts['path'] . (!empty($url_parts['query']) ? "?${url_parts['query']}" : ""));
-        $sslKeyPath = __DIR__.'apiclient_key.pem';
-        //拼接参数
-        $message = $http_method . "\n" .
-            $canonical_url . "\n" .
-            $timestamp . "\n" .
-            $nonce . "\n" .
-            $body . "\n";
-        $private_key = $this->getPrivateKey($sslKeyPath);
-        openssl_sign($message, $raw_sign, $private_key, 'sha256WithRSAEncryption');
-        $sign   = base64_encode($raw_sign);
-        return sprintf('WECHATPAY2-SHA256-RSA2048 mchid="%s",nonce_str="%s",timestamp="%s",serial_no="%s",signature="%s"', $this->mchid, $nonce, $timestamp, $this->serial, $sign);
-    }
-
-    protected function createNonceStr($length = 16) { //生成随机16个字符的字符串
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        $str = "";
-        for ($i = 0; $i < $length; $i++) {
-            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
-        }
-        return $str;
-    }
-
-    private function getPrivateKey()
-    {
-        $filepath = __DIR__.'apiclient_key.pem';
-        return openssl_get_privatekey(file_get_contents($filepath));
-    }
-
     /**
      * 通过开放平台key获取微信登录页面
      * 可通过回调获取code参数
@@ -163,7 +129,7 @@ class WeChat
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         if ($method == "POST") {
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+          curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
         } elseif ($params) {
             curl_setopt($ch, CURLOPT_URL, $url . '?' . http_build_query($params));
         }

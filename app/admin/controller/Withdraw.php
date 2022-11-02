@@ -39,6 +39,7 @@ class Withdraw extends BaseController
             $userList = Db::name('withdraw')->where($where)->order('status ASC')->page($page, $limit)->select()->toArray();
             $userIds = array_filter(array_unique(array_column($userList, 'userId')));
             $users = empty($userIds) ? [] : Db::name('user')->where('id', 'in', $userIds)->select()->toArray();
+            $count = empty($userIds) ? 0 : Db::name('user')->where('id', 'in', $userIds)->count('id');
             $users = array_column($users, null, 'id');
             foreach ($userList as $k => $vo) {
                 $userList[$k]['user'] = $users[$vo['userId']]['truename'];
@@ -46,7 +47,7 @@ class Withdraw extends BaseController
                 $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
                 $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
             }
-            $ajaxarr=['code'=>0,'data'=>$userList];
+            $ajaxarr=['code'=>0,'data'=>$userList, 'count'=>$count];
             return json($ajaxarr);
         } else {
             return View::fetch();
@@ -67,6 +68,7 @@ class Withdraw extends BaseController
             if (!$validate->check($data)) {
                 $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
             } else {
+                
                 Db::name('withdraw')->save($data);
 
                 $ajaxarr=['code'=>200,'msg'=>'修改成功'];

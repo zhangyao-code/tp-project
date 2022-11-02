@@ -37,25 +37,6 @@ class Address extends BaseController
         return json(['code'=>200,'data'=>$data]);
     }
 
-    public function get(): \think\response\Json
-    {
-        if (request()->isGet()) {
-            return json("请使用 post 提交");
-        }
-        $data = request()->param();
-        $validate = Validate::rule([
-            'id|地址id' => 'require',
-        ]);
-        if (!$validate->check($data)) {
-            return json(['code' => 100, 'msg' => $validate->getError()]);
-        }
-        $data = Db::name('address')->where('id', '=', $data['id'])->find();
-
-
-        $data['setting']= json_decode($data['setting'], true);
-        return json(['code'=>200,'data'=>$data]);
-    }
-
     public function list()
     {
         $data = request()->param();
@@ -70,8 +51,8 @@ class Address extends BaseController
         $ajaxarr = ['code' => 200, 'total'=>$count, 'data' => $userList];
         return json($ajaxarr);
     }
-
-    public function update()
+    
+        public function update()
     {
         if (request()->isGet()) {
             return json("请使用 post 提交");
@@ -96,6 +77,27 @@ class Address extends BaseController
         return json(['code' => 200, 'msg' =>'更新成功']);
     }
 
+
+    public function get(): \think\response\Json
+    {
+        if (request()->isGet()) {
+            return json("请使用 post 提交");
+        }
+        $data = request()->param();
+        $validate = Validate::rule([
+            'id|地址id' => 'require',
+        ]);
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $data = Db::name('address')->where('id', '=', $data['id'])->find();
+
+
+        $data['setting']= json_decode($data['setting'], true);
+        return json(['code'=>200,'data'=>$data]);
+    }
+    
+    
     public function delete()
     {
         if (request()->isGet()) {
@@ -109,7 +111,7 @@ class Address extends BaseController
             return json(['code' => 100, 'msg' => $validate->getError()]);
         }
         $bill = Db::name('address')->where('id', '=', $data['id'])->find();
-
+        
         try {
             Db::name('address')->delete($bill);
         } catch (\Exception $exception) {

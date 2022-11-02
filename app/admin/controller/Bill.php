@@ -65,6 +65,68 @@ class Bill extends BaseController
         return json(['code' => 200, 'msg' =>'跟新成功']);
     }
 
+
+    public function review()
+    {
+        if (request()->isGet()) {
+            return json("请使用 post 提交");
+        }
+        $validate = Validate::rule([
+            'id|要更新信息的id'=> 'require',
+            'type|是否通过' => 'require',
+        ]);
+        $data = request()->param();
+
+        if (!$validate->check($data)) {
+            return json(['code' => 100, 'msg' => $validate->getError()]);
+        }
+        $bill = Db::name('hospital_bill')->where('id', '=', $data['id'])->find();
+
+        $bill['review'] = $data['type'];
+        if($data['type'] == 'pass'){
+            $bill['status'] = 'cancel';
+        } else {
+            $bill['status'] = 'finished';
+        }
+
+        try {
+            $add_id = Db::name('hospital_bill')->save($bill);
+        } catch (\Exception $exception) {
+            return json(['code' => 100, 'msg' => $exception->getMessage()]);
+        }
+        return json(['code' => 200, 'msg' =>'更新成功']);
+    }
+    
+        public function detail()
+    {
+        $data = request()->param();
+        $bill = Db::name('hospital_bill')->where('id', '=', $data['id'])->find();
+        $hospital_service = Db::name('hospital_service')->where('id', '=', $bill['serviceId'])->find();
+        $hospital = Db::name('hospital')->where('id', '=', $bill['hospitalId'])->find();
+        $status = [
+            'review' => '审核中',
+            'normal' => '待支付',
+            'padding' => '进行中',
+            'finished' => '已完成',
+            'cancel' => '已取消',
+            'reviewPass' => '取消订单成功',
+        ];
+        $bill['status'] = $status[$bill['status']];
+        $bill["patientData"] = json_decode($bill["patientData"], true);
+        $bill["otherData"] = json_decode($bill["otherData"], true);
+        if ($bill["otherData"] && $bill["otherData"]["addressId"]) {
+            $address = Db::name('address')->where('id', '=', $bill["otherData"]["addressId"])->find();
+            if ($address) {
+                $address["setting"] = json_decode($address["setting"], true);
+                $bill["address"] = $address["setting"];
+            }
+        }
+        View::assign('hospital_service', $hospital_service);
+        View::assign('hospital', $hospital);
+        View::assign('bill', $bill);
+        return View::fetch();
+    }
+    
     public function index()
     {
         if (request()->isAjax()) {
@@ -73,6 +135,7 @@ class Bill extends BaseController
             $limit = isset($data['limit']) ? $data['limit'] : '10';
             $search = isset($data['search']) ? trim($data['search']) : '';
             $user = isset($data['user']) ? trim($data['user']) : '';
+            $status = isset($data["status"]) && $data["status"] !== 'all' ? trim($data["status"]) : '';
             $where = [];
             if ($search) {
                 $userList = Db::name('hospital')->where('name', 'like', "%$search%")->page(0, 10000)->select()->toArray();
@@ -80,10 +143,15 @@ class Bill extends BaseController
             }
             if ($user) {
                 $userList = Db::name('user')->where('truename', 'like', "%$user%")->page(0, 10000)->select()->toArray();
-                $where[] = ['userId', 'in',array_column($userList, 'id')];
+                $where[] = ['contact', 'like', "%{$user}%"];
             }
-            $userList = Db::name('hospital_bill')->where($where)->page($page, $limit)->select()->toArray();
-           $status = [
+            if ($status) {
+                 $where[] = ['status', '=', $status];
+            }
+            $userList = Db::name('hospital_bill')->where($where)->page($page, $limit)->order("id", "desc")->select()->toArray();
+               $count = Db::name('hospital_bill')->where($where)->count('id');
+             $status = [
+               'review' => '审核中',
                'normal' => '待支付',
                'padding' => '进行中',
                'finished' => '已完成',
@@ -102,7 +170,11 @@ class Bill extends BaseController
                 $userList[$k]['user'] = $user['truename'];
                 $userList[$k]['status'] = $status[$vo['status']];
             }
-            $ajaxarr = ['code' => 0, 'data' => $userList];
+            $return = [
+                "status" => $status,
+                "list" => $userList
+            ];
+            $ajaxarr = ['code' => 0, 'data' => $userList, 'count'=>$count ];
             return json($ajaxarr);
         } else {
             return View::fetch();

@@ -35,11 +35,12 @@ class Coupon extends BaseController
             }
             $where[] = ['status','<>', 'delete'];
             $userList = Db::name('coupon')->where($where)->page($page, $limit)->select()->toArray();
+            $count = Db::name('coupon')->where($where)->count('id');
             foreach ($userList as $k => $vo) {
                 $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
                 $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
             }
-            $ajaxarr=['code'=>0,'data'=>$userList];
+            $ajaxarr=['code'=>0,'data'=>$userList, 'count'=>$count];
             return json($ajaxarr);
         } else {
             return View::fetch();
@@ -64,7 +65,7 @@ class Coupon extends BaseController
                 $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
             } else {
                 $parentId = 0;
-                $num = $data['num'];
+                $num = $data['num'] > 1000 ? 1000 :$data['num'];
                 unset($data['num']);
                 for ($i = 0; $i<$num; $i++) {
                     $data['createdTime']=time();

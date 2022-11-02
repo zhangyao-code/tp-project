@@ -13,7 +13,7 @@ class Bill extends BaseController
     //normal待支付 padding 进行中 finished 已完成 cancel 已取消
 
     protected $middleware = [Check::class];
-
+    
     public function save(): \think\response\Json
     {
         if (request()->isGet()) {
@@ -39,17 +39,32 @@ class Bill extends BaseController
         $data['createdTime'] = time();
         $data['updatedTime'] = time();
         $data['otherData'] = json_encode($data['otherData']);
-
         $patient = Db::name('patient')->where('id', '=', $data['patientId'])->find();
 
-        $coupon = empty($data['couponId']) ? [] : Db::name('coupon')->where('id', '=', $data['couponId'])->find();
+        $coupon = Db::name('coupon')->where('userId', '=',$this->getCurrentUser()['id'])->where('status', '=', 'normal')->find();
         $patient['age'] = IDCard::getAgeFromIdNo($patient['IDCard']);
         $data['patientData'] = json_encode($patient);
-        $data['paymentAmount'] = empty($coupon) ? $service['price'] : ($coupon['amount'] > $service['price'] ? 0 :$service['price']-$coupon['amount']);
+
+        $paymentAmount =  $service['price'];
+        
+        if(!empty($coupon)){
+            if($service['price'] >= $coupon['limit']){
+                $paymentAmount = $coupon['amount'] > $service['price'] ? 0 :$service['price']-$coupon['amount'];
+                $data['couponId'] = $coupon['id'];
+            }
+        }
+        
+        $data['paymentAmount'] = $paymentAmount;
+        
         $data['status'] = 'normal';
         $data['validityTime'] = time()+3600;
 
         $add_id = Db::name('hospital_bill')->insertGetId($data);
+         if(!empty($coupon)){
+            $coupon['status'] = 'used';
+            Db::name('coupon')->save($coupon);   
+        }
+
         $data['id'] = $add_id;
         $data['patientData'] = $patient;
         return json(['code'=>200,'data'=>$data]);
@@ -79,7 +94,7 @@ class Bill extends BaseController
         }
         return json(['code' => 200, 'msg' =>'更新成功']);
     }
-
+    
     public function cancel(){
         $validate = Validate::rule([
             'id|要跟新信息的id'=> 'require',
@@ -93,7 +108,7 @@ class Bill extends BaseController
         if($bill['status'] == 'finished'){
             $bill['status'] = 'review';
         }else{
-            $bill['status'] = 'cancel';
+            $bill['status'] = 'review';
         }
 
         try {
@@ -101,7 +116,7 @@ class Bill extends BaseController
         } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);
         }
-
+        
         return json(['code' => 200, 'data' =>$bill]);
     }
 
@@ -127,13 +142,13 @@ class Bill extends BaseController
             $userList[$k]['hospital'] =  Db::name('hospital')->where('id', '=', $vo['hospitalId'])->find();
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
             $userList[$k]['patient'] = json_decode($vo['patientData']);
-            $userList[$k]['otherData'] = json_decode($vo['otherData']);
             if($vo['validityTime'] - time() >0){
                 $userList[$k]['validityTime'] = $vo['validityTime'] - time();
             }else{
                 $userList[$k]['validityTime'] = 0;
             }
             unset($userList[$k]['patientData']);
+            $userList[$k]['otherData'] = json_decode($vo['otherData']);
         }
         $ajaxarr = ['code' => 200, 'total'=>$count, 'data' => $userList];
         return json($ajaxarr);
@@ -146,38 +161,42 @@ class Bill extends BaseController
         $data = request()->param();
         $where[] = ['id', '=',$data['id']];
         $row = Db::name('hospital_bill')->where($where)->find();
-
+        if (!$row) {
+            return json(["code" => 100, "msg" => "订单已超时，无法查看"]);
+        }
         $row['treatmentTime'] = date('Y-m-d H:i:s', $row['treatmentTime']);
         $row['createdTime'] = date('Y-m-d H:i:s', $row['createdTime']);
         $row['updatedTime'] = date('Y-m-d H:i:s', $row['updatedTime']);
         $row['hospital'] =  Db::name('hospital')->where('id', '=', $row['hospitalId'])->find();
         $row['service'] =  Db::name('hospital_service')->where('id', '=', $row['serviceId'])->find();
         $row['patient'] = json_decode($row['patientData']);
-        $row['otherData'] = json_decode($row['otherData']);
         if($row['validityTime'] - time() >0){
-            $row['validityTime'] = $row['validityTime'] - time();
+                $row['validityTime'] = $row['validityTime'] - time();
         }else{
-            $row['validityTime'] = 0;
+                $row['validityTime'] = 0;
         }
         unset($row['patientData']);
-        $coupon = empty($data['couponId']) ? [] : Db::name('coupon')->where('id', '=', $data['couponId'])->find();
+        $row['otherData'] = json_decode($row['otherData']);
+       $coupon = empty($row['couponId']) ? [] : Db::name('coupon')->where('id', '=', $row['couponId'])->find();
         $row['coupon'] = empty($coupon) ? 0 :$coupon['amount'];
+    
         $ajaxarr = ['code' => 200, 'data' => $row];
         return json($ajaxarr);
     }
-
+    
     private function refresh(){
         $update=[
             ['validityTime', '>', 0],
             ['validityTime', '<', time()],
             ['status', '=', 'normal']
         ];
-        Db::name('hospital_bill')->where($update)->update(['status'=>'cancel']);
-        $update=[
+        //Db::name('hospital_bill')->where($update)->update(['status'=>'cancel']);
+        Db::name("hospital_bill")->where($update)->delete();
+        /*$update=[
             ['treatmentTime', '<', time()],
             ['status', '=', 'padding']
         ];
-        Db::name('hospital_bill')->where($update)->update(['status'=>'finished']);
+        Db::name('hospital_bill')->where($update)->update(['status'=>'finished']);*/
     }
 
 }

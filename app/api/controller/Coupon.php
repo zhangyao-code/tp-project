@@ -10,8 +10,8 @@ class Coupon extends BaseController
 {
     public function index(): \think\response\Json
     {
-        $result = $this->handle();
-        if(empty(!empty($result))){
+        $result = $this->token();
+        if(!empty($result)){
             return json($result);
         }
         $data = request()->param();
@@ -65,8 +65,8 @@ class Coupon extends BaseController
 
     public function receive(): \think\response\Json
     {
-        $result = $this->handle();
-        if(empty(!empty($result))){
+        $result = $this->token();
+        if(!empty($result)){
             return json($result);
         }
         $data = request()->param();
@@ -93,9 +93,9 @@ class Coupon extends BaseController
         return json($ajaxarr);
     }
 
-    public function handle($request, \Closure $next)
+    public function token()
     {
-        $token = $request->header('token');
+        $token = request()->header('token');
 
         if (empty($token)) {
             return ['code'=> 403, 'message'=> 'Authentication error, header->token is empty'];

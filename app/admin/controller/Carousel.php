@@ -1,10 +1,5 @@
 <?php
 
-/**
- * 账户管理
- * 开发者：浮生若梦
- * 开发时间：2020/9/7
- */
 
 namespace app\admin\controller;
 

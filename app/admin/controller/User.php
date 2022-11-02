@@ -44,13 +44,13 @@ class User extends BaseController
             if ($login_role_id != 1) {
                 $where[]=['id','=',Session::get('login_user_id')];
             }
-
+            $count=Db::name('user')->where($where)->count();
             $userList = Db::name('user')->where($where)->page($page, $limit)->select()->toArray();
             foreach ($userList as $k => $vo) {
                 $userList[$k]['add_time'] = date('Y-m-d', $vo['add_time']);
                 $userList[$k]['role_name'] = DB::name('role')->where(['id' => $vo['role_id']])->value('role_name') ? DB::name('role')->where(['id' => $vo['role_id']])->value('role_name') : '';
             }
-            $ajaxarr=['code'=>0,'data'=>$userList];
+            $ajaxarr=['code'=>0,'data'=>$userList, 'count'=>$count];
             return json($ajaxarr);
         } else {
             $is_show=0;

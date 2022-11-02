@@ -34,10 +34,11 @@ class Department extends BaseController
             }
             $where[] = ['status', '=', 'normal'];
             $userList = Db::name('hospital_department')->where($where)->page($page, $limit)->select()->toArray();
+            $count = Db::name('hospital_department')->where($where)->count('id');
             foreach ($userList as $k => $vo) {
                 $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
             }
-            $ajaxarr = ['code' => 0, 'data' => $userList];
+            $ajaxarr = ['code' => 0, 'data' => $userList, 'count'=>$count];
             return json($ajaxarr);
         } else {
             return View::fetch();

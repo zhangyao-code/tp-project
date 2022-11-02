@@ -19,7 +19,7 @@ class PayV3
    */
     public function wechartAddOrder($name, $ordernumber, $money, $openid)
     {
-        $out_trade_no = $ordernumber;//生成支付单号（和订单号不一样）这样做是保证同一个订单可以被多次进行支付，因为每次支付单号不一样
+        $out_trade_no = uniqid();//生成支付单号（和订单号不一样）这样做是保证同一个订单可以被多次进行支付，因为每次支付单号不一样
         $url = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";
         $urlarr = parse_url($url);
         $data = array();
@@ -29,7 +29,7 @@ class PayV3
         $data['mchid'] = $this->mchid;
         $data['description'] = $name;//商品描述
         $data['attach'] = $ordernumber;//订单编号
-        $data['out_trade_no'] = $out_trade_no;//支付订单编号
+        $data['out_trade_no'] = $ordernumber;//支付订单编号
         $data['notify_url'] = "https://shop.aenheer.com/api/Pay";//回调接口
         $data['time_expire'] = date("c", time() + 3600);
         $data['amount']['total'] = $money;
@@ -157,42 +157,13 @@ class PayV3
     /*
     * 微信支付回调
     * */
-    public function payment_notify()
+    public function payment_notify($input_data)
     {
-        //        $input_data = $request->param();
-
-        $data = '{"id":"2684b588-2231-5482-bc06-2858e1361912","create_time":"2022-09-23T19:25:46+08:00","resource_type":"encrypt-resource","event_type":"TRANSACTION.SUCCESS","summary":"\u652f\u4ed8\u6210\u529f","resource":{"original_type":"transaction","algorithm":"AEAD_AES_256_GCM","ciphertext":"sou+94Sf28VuP3RDdkApkX60qs21QWsTZvH6JdfkcICDFLQaVUvkwsAGruyoFUk1u2MhFkBYQjZvdVrs+Y+49gZ6yNjQ7oMS44teehmtvOtwZfaTzspWn7u0\/va25TKhg6yKmKMnlREe9DlVnmkfsQK1rItXMzf2oLspERCPkmJQoDKrxMdQ5nxAhhViOu0fUvNaEvM0trSycPUgYud5Z2XCe4l+mHGcFfG5xcM7+eVnRHIUNQxGV35zBWkGGZHe5YsElaJlSAEHY\/7h8RGMzz3rkImGrwYFUTZj2KItY8qIYKg1AZjFgW83arHL0imXXZj8gF\/QtyJ37YkT\/qwJwR4DXHuDXgfhWw6ZfoOBolepv+ScE+BckHw3+XoNH\/HhWrNRyLv23AHpe\/bArhEoUovm8ualKB4E3Zdi5a4\/ZUNRJv2raDvMqJjRWW7dqoXfaJPqxmwKWWsKlpHlV4EA4ReRH07db6NBvGPB5QEhn0GWYmV9wbOEW8DOEMAyUSD25b2tmrbdxAVbFQSIVluf9tTgHNWlMWQPtTaIZ04JVK0wFFAdWa1Ag8W8HHYYKbJdWTM\/cfTSq+wiOoZV","associated_data":"transaction","nonce":"4prCoBKcZPKz"}}';
-$input_data = json_decode($data, true);
-
         $key = 'ahb5e944ad83918b8b5e9d88e1912022';//商户平台设置的api v3 密码
         $text = base64_decode($input_data['resource']['ciphertext']); //解密
         /* =========== 使用V3支付需要PHP7.2.6安装sodium扩展才能进行解密参数  ================ */
-        $str = sodium_crypto_aead_aes256gcm_decrypt($text, $input_data['resource']['associated_data'], $input_data['resource']['nonce'], $key);
-        $res = json_decode($str, true);
-        if ($res['trade_state'] == 'SUCCESS') {
-            Db::startTrans();
-            try {
-                /* 成功操作 */
-                Db::commit();
-                $a = array(
-                    "code" => "SUCCESS",
-                    "message" => "成功"
-                );
-                return json_encode($a);
-            } catch (\Exception $e) {
-                Db::rollback();
-                $a = array(
-                    "code" => "ERROR",
-                    "message" => "失败"
-                );
-                return json_encode($a);
-            }
-        }
-        $a = array(
-            "code" => "ERROR",
-            "message" => "失败"
-        );
-        return json_encode($a);
+        $str = sodium_crypto_aead_aes256gcm_decrypt($text,$input_data['resource']['associated_data'], $input_data['resource']['nonce'], $key);
+        return json_decode($str, true);
     }
 
     /*

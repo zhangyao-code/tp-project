@@ -116,7 +116,7 @@ class Patient extends BaseController
         try {
             $add_id=Db::name('patient')->save($data);
             if (empty($add_id)) {
-                return json(['code'=>400,'msg'=>'跟新失败']);
+                return json(['code'=>400,'msg'=>'更新失败']);
             }
         } catch (\Exception $exception) {
             return json(['code' => 100, 'msg' => $exception->getMessage()]);

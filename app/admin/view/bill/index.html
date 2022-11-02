@@ -29,7 +29,7 @@
 <body>
 <div style="margin-top: 10px;">
     <span class="layui-breadcrumb">
-      <a href="javascript:;" class="menu_link" menu_link="/admin/Hospital/index" menu_id="2">订单管理</a>
+      <a href="javascript:;" class="menu_link" menu_link="/admin/Bill/index" menu_id="36">订单管理</a>
       <a><cite>列表</cite></a>
     </span>
 </div>
@@ -52,7 +52,22 @@
                 <input class="layui-input" maxlength="40" name="user" id="search_user" placeholder="请输入客户姓名" autocomplete="off">
             </div>
         </div>
-
+        <div class="layui-inline">
+            <label class="layui-form-label">订单状态：</label>
+            <div class="layui-input-inline">
+                <select name="type" id="search_status" style="padding: 4px;
+    width: 80px;
+    height: 36px;
+    border-color: #e5e0e0;">
+                    <option value="all">全部</option>
+                    <option value="review">审核中</option>
+                    <option value="normal">待支付</option>
+                    <option value="padding">进行中</option>
+                    <option value="finished">已完成</option>
+                    <option value="cancel">已取消</option>
+                </select>
+            </div>
+        </div>
         <div class="layui-inline">
             <div class="layui-input-inline">
                 <button id="search" type="button" class="layui-btn" data-type="reload">搜索</button>
@@ -63,6 +78,29 @@
 </div>
 
 <table class="layui-hide" id="hospital_list" lay-filter="hospital_list"></table>
+
+<script type="text/html" id="barDemo">
+
+    {{#  if(d.status == '审核中'){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="reviewpass">审核通过</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reviewfail">审核失败</a>
+    {{#  } else { }}
+        {{#  if(d.review == 'pass'){ }}
+         已同意取消订单申请
+        {{#  } }}
+        {{#  if(d.review == 'fail'){ }}
+        已拒绝取消订单申请
+        {{#  } }}
+    {{#  } }}
+    {{#  if(d.status == '进行中'){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="reviewfinished">标记完成</a>
+    {{#  } }}
+</script>
+
+<script type="text/html" id="detail">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看详情</a>
+</script>
+
 
 {include file="public::bottom"}
 
@@ -85,26 +123,18 @@
                 ,{fixed: 'left',field: 'hospital', title: '医院名称',align:'center',width:'15%'}
                 ,{field: 'service', title: '服务', align:'center',width:'20%'}
                 ,{field: 'user', title: '下单用户',align:'center',width:'10%'}
-                ,{field: 'price', title: '金额', align:'center',width:'15%'}
-                ,{field: 'status', title: '订单状态', align:'center',width:'15%'}
-                ,{field: 'brokerage', title: '佣金', align:'center',width:'15%'}
+                ,{field: 'price', title: '金额', align:'center',width:'10%'}
+                ,{field: 'status', title: '订单状态', align:'center',width:'10%'}
+                ,{field: 'brokerage', title: '佣金', align:'center',width:'11%'}
+                ,{fixed: 'right',title: '详情',width:'10%', align:'center', toolbar: '#detail'}
+                ,{fixed: 'right',title: '操作',width:'15%', align:'center', toolbar: '#barDemo'}
             ] ]
         });
         var $ = layui.$, active = {
-            add: function(){
-                // layer.alert('新增');
-                layer.open({
-                    type: 2,
-                    title: '新增医院',
-                    shadeClose: true,
-                    area: ['650px', '90%'],
-                    content: '/admin/Hospital/add' //iframe的url
-                });
-                // $("body",parent.document).find('iframe').attr('src','/Menu/add');
-            },
             reload: function(){
                 var search = $('#search_content').val();
                 var user = $('#search_user').val();
+                var status = $("#search_status").val();
                 //执行重载
                 table.reload('tblId', {
                     page: {
@@ -112,11 +142,46 @@
                     }
                     ,where: {
                         search: search,
-                        user:user
+                        user:user,
+                        status: status
                     }
-                }, 'data');
+                }, 'data.list');
             }
         };
+
+        table.on('tool(hospital_list)', function(obj){
+            var data = obj.data;
+
+            if(obj.event == 'reviewpass' || obj.event == 'reviewfail' || obj.event == 'reviewfinished'){
+                if(obj.event == 'reviewpass'){
+                    var type = 'pass';
+                }else if (obj.event === 'reviewfail'){
+                    var type = 'fail';
+                } else {
+                    var type = 'finished';
+                }
+                $.post("/admin/Bill/review", {id:data.id,'type':type}, function (data) {
+                    if(data.code == 200){
+                        table.reload('tblId', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        }, 'data.list');
+                    }
+                    layer.msg(data.msg,{time:2000});
+                })
+            }
+            if(obj.event == 'detail'){
+                layer.open({
+                    type: 2,
+                    title: '订单详情',
+                    shadeClose: true,
+                    area: ['650px', '70%'],
+                    content: '/admin/bill/detail?id='+data.id,
+                });
+            }
+
+        });
 
         $('.demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');

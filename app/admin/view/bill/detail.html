@@ -1,0 +1,93 @@
+<style>
+    .divider {
+        border-top:1px solid #00f;height:1px;width:100%;margin:20px 0 20px 0
+    }
+</style>
+<div style="padding: 15px">
+    <div>
+        <div style="width: 60px;float: left;">订单ID</div> <div style="margin-left: 125px">{$bill.id}</div>
+    </div>
+
+    <div style="margin-top: 15px">
+        <div style="width: 60px;float: left;">医院</div> <div style="margin-left: 125px">{$hospital.name}</div>
+    </div>
+
+    <div style="margin-top: 15px">
+        <div style="width: 60px;float: left;">服务</div> <div style="margin-left: 125px">{$hospital_service.name}</div>
+    </div>
+
+    <div style="margin-top: 15px">
+        <div style="width: 60px;float: left;">科室</div> <div style="margin-left: 125px">{$bill.department}</div>
+    </div>
+    
+    <div class="divider"></div>
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">订单状态</div> <div style="margin-left: 125px">{$bill.status}</div>
+    </div>
+
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">订单金额</div> <div style="margin-left: 125px">{$bill.price}</div>
+    </div>
+
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">实付金额</div> <div style="margin-left: 125px">{$bill.paymentAmount}</div>
+    </div>
+
+    <div class="divider"></div>
+    {if $bill.contact}
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">联系人</div> <div style="margin-left: 125px">{$bill.contact}</div>
+    </div>
+    {/if}
+
+    {if $bill.contactMobile}
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">联系电话</div> <div style="margin-left: 125px">{$bill.contactMobile}</div>
+    </div>
+    {/if}
+    
+    {if $bill.demand}
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">服务要求</div> <div style="margin-left: 125px">{$bill.demand}</div>
+    </div>
+    {/if}
+    <div class="divider"></div>
+    {if $bill.patientData}
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">就诊人姓名</div> <div style="margin-left: 125px">{$bill.patientData.name}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">就诊人性别</div> <div style="margin-left: 125px">{$bill.patientData.gender}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 100px;float: left;">就诊人手机号</div> <div style="margin-left: 125px">{$bill.patientData.mobile}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 100px;float: left;">就诊人身份证</div> <div style="margin-left: 125px">{$bill.patientData.IDCard}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">就诊人关系</div> <div style="margin-left: 125px">{$bill.patientData.relation}</div>
+    </div>
+    {/if}
+    
+    <div class="divider"></div>
+    {if $bill.otherData && $bill.otherData.drugName}
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">药品名称</div> <div style="margin-left: 125px">{$bill.otherData.drugName}</div>
+    </div>
+    {/if}
+    {if $bill.otherData && $bill.otherData.addressId && $bill.address}
+    <div style="margin-top: 15px">
+        <div style="width: 80px;float: left;">收货人姓名</div> <div style="margin-left: 125px">{$bill.address.name}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 100px;float: left;">收货人手机号</div> <div style="margin-left: 125px">{$bill.address.mobile}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 100px;float: left;">省市区</div> <div style="margin-left: 125px">{$bill.patientData.province}{$bill.patientData.city}{$bill.patientData.district}</div>
+    </div>
+    <div style="margin-top: 15px">
+        <div style="width: 100px;float: left;">详细地址</div> <div style="margin-left: 125px">{$bill.patientData.address}</div>
+    </div>
+    {/if}
+</div>

@@ -78,7 +78,9 @@ class Withdraw extends BaseController
             ->select()->toArray();
 
         $billsCount = empty($bills[0]['money']) ? 0 : $bills[0]['money'];
-
+        $tableData = Db::name('setting')->where(['code' => 'brokerage_Proportion'])->find();
+        $billsCount = $billsCount * (float)$tableData['content'];
+      
         return $billsCount <= $count ? 0 : $billsCount - $count;
     }
 

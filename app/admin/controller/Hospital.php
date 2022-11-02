@@ -35,6 +35,7 @@ class Hospital extends BaseController
             }
             $where[] = ['deleted', '=', 0];
             $userList = Db::name('hospital')->where($where)->page($page, $limit)->select()->toArray();
+             $count = Db::name('hospital')->where($where)->count('id');
 
             foreach ($userList as $k => $vo) {
                 $departments = empty($vo['departments']) ? [] : Db::name('hospital_department')->whereIn('id', explode(',', $vo['departments']))->select()->toArray();
@@ -44,7 +45,7 @@ class Hospital extends BaseController
                 $userList[$k]['createdTime'] = date('Y-m-d H:i:s', $vo['createdTime']);
                 $userList[$k]['updatedTime'] = date('Y-m-d H:i:s', $vo['updatedTime']);
             }
-            $ajaxarr = ['code' => 0, 'data' => $userList];
+            $ajaxarr = ['code' => 0, 'data' => $userList, 'count'=>$count];
             return json($ajaxarr);
         } else {
             return View::fetch();
@@ -65,7 +66,7 @@ class Hospital extends BaseController
             if (!$validate->check($data)) {
                 $ajaxarr = ['code' => 100, 'msg' => $validate->getError()];
             } else {
-                if (Db::name('hospital')->where(['name' => $data['name']])->find()) {
+                if (Db::name('hospital')->where(['name' => $data['name'], 'deleted' =>0])->find()) {
                     $ajaxarr = ['code' => 400, 'msg' => '医院名称重复，请更换'];
                 } else {
                     unset($data['file']);

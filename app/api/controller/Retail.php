@@ -36,7 +36,7 @@ class Retail extends BaseController
             $userList[$k]['service'] =  Db::name('hospital_service')->where('id', '=', $vo['serviceId'])->find();
             $userList[$k]['patient'] =  Db::name('patient')->where('id', '=', $vo['patientId'])->find();
         }
-        $ajaxarr = ['code' => 0, 'total' => $total, 'data' => $userList];
+        $ajaxarr = ['code' => 200, 'total' => $total, 'data' => $userList];
         return json($ajaxarr);
     }
 }
